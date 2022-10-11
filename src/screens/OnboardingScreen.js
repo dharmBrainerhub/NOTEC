@@ -1,10 +1,13 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View, Text, Button, StyleSheet, Image} from 'react-native';
+import {StyleSheet, Image} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
-const OnboardingScreen = ({navigation}) => {
+const OnboardingScreen = () => {
+  const navigation = useNavigation();
   return (
     <Onboarding
+      onDone={() => navigation.navigate('SignUp')}
       pages={[
         {
           backgroundColor: '#fff',
