@@ -4,9 +4,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const HomeScreen = () => {
   return (
-    <View>
-      <Text>HomeScreen</Text>
-      <AntDesign name="plus" />
+    <View style={{backgroundColor: 'white', flex: 1}}>
+      <Text>jhgvhf</Text>
     </View>
   );
 };
