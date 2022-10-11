@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
+import { InputBox } from '../../components';
 const h = Dimensions.get('screen').height;
 const w = Dimensions.get('screen').width;
 const SignupScreen = () => {
@@ -23,9 +24,9 @@ const SignupScreen = () => {
           alignSelf: 'center',
           marginTop: h * 0.4,
         }}>
-        <TextInput style={styles.textInput} placeholder="Name" />
-        <TextInput style={styles.textInput} placeholder="Your Email" />
-        <TextInput style={styles.textInput} placeholder="Password" />
+        <InputBox style={styles.textInput} placeholder="Name" />
+        <InputBox style={styles.textInput} placeholder="Your Email" />
+        <InputBox style={styles.textInput} placeholder="Password" />
       </View>
       <View style={styles.lastView} />
     </View>
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#663399',
     borderRadius: 430,
     position: 'absolute',
-    top: -h * 0.62,
+    top: -h * 0.68,
     left: -w * 0.95,
     zIndex: -111,
     justifyContent: 'center',
@@ -55,12 +56,12 @@ const styles = StyleSheet.create({
     right: -w * 0.5,
   },
   textInput: {
-    borderRadius: 10,
-    backgroundColor: '#DDA0DD',
-    elevation: 15,
-    marginTop: 20,
-    fontSize: 18,
-    paddingLeft: 15,
-    fontWeight: '600',
+    // borderRadius: 10,
+    // backgroundColor: '#DDA0DD',
+    // elevation: 15,
+    // marginTop: 20,
+    // fontSize: 18,
+    // paddingLeft: 15,
+    // fontWeight: '600',
   },
 });

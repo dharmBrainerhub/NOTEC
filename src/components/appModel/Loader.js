@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
 import {LottieLoader} from 'lottie-loader-react-native';
 import LottieView from 'lottie-react-native';
-import {scale, theme} from '../Utils';
+import {scale, theme} from '../../utils';
 import {Label} from './Label';
 
 const Loader = (props) => {
@@ -21,7 +21,7 @@ const Loader = (props) => {
             animationStyle={styles.lottie}
             speed={1}
           /> */}
-          <LottieView source={require('../Utils/loading.json')} autoPlay loop />
+          <LottieView source={{uri:'https://assets5.lottiefiles.com/packages/lf20_rxpugebj.json'}} autoPlay loop />
         </View>
       </View>
     </Modal>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000020',
     zIndex: 111,
   },
-  label: {textAlign: 'center', color: theme.colors.blue},
+  label: {textAlign: 'center', color: theme.colors.black},
   activityIndicatorWrapper: {
     backgroundColor: theme.colors.white,
     height: scale(100),

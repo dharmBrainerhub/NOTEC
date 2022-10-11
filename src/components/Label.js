@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, StyleSheet} from 'react-native';
-import {theme, scale} from '../Utils';
+import {theme, scale} from '../utils';
 
 const Label = props => {
   const {title, style, numberOfLines} = props;
