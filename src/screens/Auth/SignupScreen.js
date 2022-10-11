@@ -1,22 +1,26 @@
 import {Dimensions, StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
-import { InputBox } from '../../components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+import { InputBox, Title } from '../../components';
+import { theme } from '../../utils';
 const h = Dimensions.get('screen').height;
 const w = Dimensions.get('screen').width;
 const SignupScreen = () => {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <View style={styles.firstView}>
-        <Text
+        <Title
+
           style={{
             color: '#000',
             fontSize: 23,
             zIndex: 111,
-            position: 'absolute',
-            bottom: 0,
-          }}>
-          Create Account
-        </Text>
+            marginTop:theme.SCREENHEIGHT*0.02,
+            left:-theme.SCREENWIDTH*0.1
+          }}
+          title={'Create Account'}
+        />
       </View>
       <View
         style={{
@@ -35,21 +39,23 @@ const SignupScreen = () => {
 export default SignupScreen;
 const styles = StyleSheet.create({
   firstView: {
-    height: '100%',
-    width: '200%',
-    backgroundColor: '#663399',
-    borderRadius: 430,
+    height:theme.SCREENHEIGHT/3,
+    backgroundColor: theme.colors.purpal,
     position: 'absolute',
-    top: -h * 0.68,
-    left: -w * 0.95,
+    width:'100%',
+    top: -h * 0.02,
+    // left: -w * 0.1,
     zIndex: -111,
     justifyContent: 'center',
     alignItems: 'center',
+    borderBottomRightRadius:theme.SCREENHEIGHT*7,
+    borderBottomLeftRadius:theme.SCREENHEIGHT*2,
+    
   },
   lastView: {
     height: '50%',
     width: '100%',
-    backgroundColor: '#663399',
+    backgroundColor: theme.colors.purpal,
     position: 'absolute',
     borderRadius: 200,
     bottom: -h * 0.29,

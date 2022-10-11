@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 1,
     elevation: 1,
+    // padding:5
     // borderWidth: scale(0.24),
     // borderColor: theme.colors.darkPrimaryColor,
   },
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: theme.SCREENHEIGHT * 0.068,
     // textAlign: 'center',
-    paddingHorizontal: scale(5),
+    paddingHorizontal: scale(8),
     fontSize: scale(14),
     color: theme.colors.black,
   },
