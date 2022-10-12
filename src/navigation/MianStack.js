@@ -3,13 +3,15 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Signup, Home, SignIn} from '../screens';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import {useSelector} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 
 const MianStack = () => {
+  const isLogin = useSelector(state => state.UserReducer.login);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="onBoardingScreen">
+      <Stack.Navigator initialRouteName={isLogin ? 'Home' : 'onBoardingScreen'}>
         <Stack.Screen
           name="onBoardingScreen"
           component={OnboardingScreen}

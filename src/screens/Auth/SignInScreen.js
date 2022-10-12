@@ -8,14 +8,52 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Button, InputBox, Title} from '../../components';
+import {Button, InputBox, Loader, Title} from '../../components';
 import {scale, theme} from '../../utils';
 import {useNavigation} from '@react-navigation/native';
 const h = Dimensions.get('screen').height;
 const w = Dimensions.get('screen').width;
+import auth from '@react-native-firebase/auth';
+import {getUrserDetails, usersCollection} from '../../utils/FirebaseServices';
+import {useDispatch} from 'react-redux';
+import {isLogin, userData} from '../../redux/Actions/UserActions';
+
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loader, setLoader] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const handleLogin = async () => {
+    try {
+      setLoader(true);
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(async res => {
+          let userId = res.user.uid;
+          usersCollection.doc(userId).onSnapshot(documentSnapshot => {
+            setLoader(false);
+            dispatch(userData(documentSnapshot.data()));
+            dispatch(isLogin(true));
+            navigation.navigate('Home');
+            console.log('login user data >> ', documentSnapshot.data());
+          });
+        })
+        .catch(e => {
+          setLoader(false);
+          console.log('error ', e);
+        })
+        .finally(f => {
+          setLoader(false);
+          console.log('finally ', f);
+        });
+    } catch (error) {
+      setLoader(false);
+      console.log('error try', error);
+    }
+  };
+
   const navigation = useNavigation();
   return (
     <KeyboardAwareScrollView
@@ -62,12 +100,13 @@ const SignInScreen = () => {
         title={'Login'}
         style={styles.btn}
         onPress={() => {
-          navigation.navigate('Home'), console.log(email, password);
+          handleLogin();
         }}
       />
       <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
         <Text style={styles.loginText}>Create new Account</Text>
       </TouchableOpacity>
+      {loader && <Loader loading={loader} />}
     </KeyboardAwareScrollView>
   );
 };

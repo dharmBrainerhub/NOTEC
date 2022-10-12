@@ -4,18 +4,29 @@ import {theme} from '../../utils';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import CustomIcon from '../../components/CustomIcon';
 import Feather from 'react-native-vector-icons/Feather';
-import {InputBox} from '../../components';
+import {InputBox, Label} from '../../components';
 import * as Animatable from 'react-native-animatable';
+import {useSelector} from 'react-redux';
 
 const NoteScreen = props => {
   const [searchInput, setSearchInput] = useState(false);
+  const userInfo = useSelector(state => state.UserReducer.userDetails);
+  console.log('user info ', userInfo);
   return (
     <View style={{paddingHorizontal: 10}}>
       <View style={styles.headerView}>
-        <Text
-          style={{color: theme.colors.purpal, fontSize: 24, fontWeight: '600'}}>
-          Notes
-        </Text>
+        <View>
+          <Text
+            style={{
+              color: theme.colors.purpal,
+              fontSize: 24,
+              fontWeight: '600',
+            }}>
+            Notes
+          </Text>
+          <Label title={`Welcome ${userInfo?.userName}`} />
+        </View>
+
         <View style={{flexDirection: 'row'}}>
           {searchInput === true ? (
             <CustomIcon

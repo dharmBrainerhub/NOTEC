@@ -22,6 +22,8 @@ const SignupScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const naviagtion = useNavigation();
+  const [show, setShow] = useState(false);
+  const [errorMsg, setErrormsg] = useState('');
 
   const signupAction = () => {
     auth()
@@ -53,14 +55,27 @@ const SignupScreen = () => {
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
           console.log('That email address is already in use!');
+          setShow(true);
+          setErrormsg('That email address is already in use!');
         }
 
         if (error.code === 'auth/invalid-email') {
           console.log('That email address is invalid!');
+          setShow(true);
+          setErrormsg('That email address is invalid!');
+        }
+        if (error.code === 'auth/weak-password') {
+          console.log('The given password is invalid.');
+          setShow(true);
+          setErrormsg('The given password is invalid.');
         }
 
         console.error(error);
       });
+  };
+  const closeModel = () => {
+    setShow(false);
+    setErrormsg('');
   };
   return (
     <KeyboardAwareScrollView

@@ -5,23 +5,23 @@ import LottieView from 'lottie-react-native';
 import {scale, theme} from '../../utils';
 import {Label} from './Label';
 
-const Loader = (props) => {
+const Loader = props => {
   const {loading} = props;
   return (
     <Modal
-      transparent={true}
+      transparent={loading}
       animationType={'none'}
       visible={loading}
       onRequestClose={() => {}}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
-          {/* <LottieLoader
-            visible={true}
-            source={require('../Utils/loading.json')}
-            animationStyle={styles.lottie}
-            speed={1}
-          /> */}
-          <LottieView source={{uri:'https://assets5.lottiefiles.com/packages/lf20_rxpugebj.json'}} autoPlay loop />
+          <LottieView
+            source={{
+              uri: 'https://assets5.lottiefiles.com/packages/lf20_rxpugebj.json',
+            }}
+            autoPlay
+            loop
+          />
         </View>
       </View>
     </Modal>
