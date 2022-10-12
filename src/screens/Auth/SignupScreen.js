@@ -11,8 +11,8 @@ import {
 import React from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {InputBox, Title} from '../../components';
-import {theme} from '../../utils';
+import {Button, InputBox, Title} from '../../components';
+import {scale, theme} from '../../utils';
 const h = Dimensions.get('screen').height;
 const w = Dimensions.get('screen').width;
 const SignupScreen = () => {
@@ -34,7 +34,7 @@ const SignupScreen = () => {
         </View>
         <View
           style={{
-            width: '80%',
+            // width: '80%',
             alignSelf: 'center',
             marginTop: h * 0.4,
           }}>
@@ -42,6 +42,7 @@ const SignupScreen = () => {
           <InputBox style={styles.textInput} placeholder="Your Email" />
           <InputBox style={styles.textInput} placeholder="Password" />
         </View>
+        <Button title={'Signup'} style={styles.btn} />
         <View style={styles.lastView} />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -70,9 +71,11 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     bottom: -h * 0.29,
     right: -w * 0.5,
+    zIndex:-11
   },
   textInput: {
-    borderRadius: 10,
+    width: theme.SCREENWIDTH - scale(70),
+    // borderRadius: 10,
     // backgroundColor: '#DDA0DD',
     elevation: 15,
     // marginTop: 20,
@@ -80,4 +83,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     // fontWeight: '600',
   },
+  btn:{
+    marginTop:scale(25)
+  }
 });
