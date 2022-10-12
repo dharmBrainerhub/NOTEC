@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/Ionicons';
 import {scale, theme} from '../utils';
 
-const InputBox = (props) => {
+const InputBox = props => {
   const {
     multiline,
     value,
@@ -28,7 +28,7 @@ const InputBox = (props) => {
     passwordIcon,
   } = props;
   const [showpassword, setShowpassword] = React.useState(false);
-//   TextInput.defaultProps.selectionColor = theme.colors.black;
+  //   TextInput.defaultProps.selectionColor = theme.colors.black;
   return (
     <View style={[styles.inputContainer, style]}>
       {Img ? (
@@ -94,7 +94,7 @@ const InputBox = (props) => {
       {passwordIcon && (
         <Icon
           name={!showpassword ? 'eye' : 'eye-off'}
-          size={scale(20)}
+          size={scale(18)}
           color={theme.colors.grey22}
           style={styles.icon}
           onPress={() => setShowpassword(!showpassword)}
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: scale(10),
     alignSelf: 'center',
+    right: 5,
   },
   input: {
     flex: 1,

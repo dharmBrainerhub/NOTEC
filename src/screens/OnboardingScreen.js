@@ -1,14 +1,19 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Image} from 'react-native';
+import {
+  StyleSheet,
+  Image,
+  ViewPagerAndroidBase,
+  TouchableOpacity,
+} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 
 const OnboardingScreen = () => {
   const navigation = useNavigation();
   return (
     <Onboarding
-      onDone={() => navigation.navigate('SignUp')}
-      onSkip={() => navigation.navigate('SignUp')}
+      onDone={() => navigation.navigate('SignIn')}
+      onSkip={() => navigation.navigate('SignIn')}
       pages={[
         {
           backgroundColor: '#fff',

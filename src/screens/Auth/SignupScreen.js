@@ -4,47 +4,52 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TextInput,
+  TouchableOpacity,
   View,
+  Text,
 } from 'react-native';
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {Button, InputBox, Title} from '../../components';
 import {scale, theme} from '../../utils';
-import { usersCollection } from '../../utils/FirebaseServices';
+import {usersCollection} from '../../utils/FirebaseServices';
+import {useNavigation} from '@react-navigation/native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width;
 const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const naviagtion = useNavigation();
 
   const signupAction = () => {
     auth()
-      .createUserWithEmailAndPassword(
-        email,
-        password,
-      )
-      .then((res) => {
+      .createUserWithEmailAndPassword(email, password)
+      .then(res => {
         let user = {
-          userName:name,
-          email:res.user.email,
-          image:res.additionalUserInfo.profile,
-          _id:res.user.uid,
-          created_at:new Date()
-        }
-        usersCollection.doc(res.user.uid).set(user).then((response)=>{
-          console.log('response firestore  >> ',response)
-        }).catch((e)=>{
-          console.log('catch >> ',e)
+          userName: name,
+          email: res.user.email,
+          image: res.additionalUserInfo.profile,
+          _id: res.user.uid,
+          created_at: new Date(),
+        };
+        usersCollection
+          .doc(res.user.uid)
+          .set(user)
+          .then(response => {
+            console.log('response firestore  >> ', response);
+          })
+          .catch(e => {
+            console.log('catch >> ', e);
+          })
+          .finally(f => {
+            console.log('final >> ', f);
+          });
 
-        }).finally((f)=>{
-          console.log('final >> ',f)
-        })
         console.log('User account created & signed in!');
+        naviagtion.navigate('SignIn');
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
@@ -54,68 +59,83 @@ const SignupScreen = () => {
         if (error.code === 'auth/invalid-email') {
           console.log('That email address is invalid!');
         }
+
         console.error(error);
       });
   };
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: theme.colors.white}}>
-      <ScrollView style={{flex: 1, height: theme.SCREENHEIGHT}}>
-        <View style={styles.firstView}>
-          <Title
-            style={{
-              color: theme.colors.white,
-              fontSize: 23,
-              // zIndex: 111,
-              marginTop: theme.SCREENHEIGHT * 0.1,
-              left: -theme.SCREENWIDTH * 0.1,
-            }}
-            title={'Create Account'}
-          />
-        </View>
-        <View
+    <KeyboardAwareScrollView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.white,
+        height: theme.SCREENHEIGHT,
+      }}
+      showsVerticalScrollIndicator={false}>
+      <View style={styles.firstView}>
+        <Title
           style={{
-            // width: '80%',
-            alignSelf: 'center',
-            marginTop: h * 0.4,
-          }}>
-          <InputBox
-            onChangeText={txt => {
-              setName(txt);
-            }}
-            value={name}
-            style={styles.textInput}
-            placeholder="Name"
-          />
-          <InputBox
-            onChangeText={txt => {
-              setEmail(txt);
-            }}
-            value={email}
-            style={styles.textInput}
-            placeholder="Your Email"
-          />
-          <InputBox
-            onChangeText={txt => {
-              setPassword(txt);
-            }}
-            value={password}
-            style={styles.textInput}
-            placeholder="Password"
-            secureTextEntry
-            passwordIcon
-          />
-        </View>
-        <Button
-          title={'Signup'}
-          style={styles.btn}
-          onPress={() => {
-            signupAction();
+            color: theme.colors.white,
+            fontSize: 23,
+            // zIndex: 111,
+            marginTop: theme.SCREENHEIGHT * 0.1,
+            left: -theme.SCREENWIDTH * 0.1,
           }}
+          title={'Create New Account'}
         />
-        <View style={styles.lastView} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+      <View
+        style={{
+          // width: '80%',
+          alignSelf: 'center',
+          marginTop: h * 0.4,
+        }}>
+        <InputBox
+          onChangeText={txt => {
+            setName(txt);
+          }}
+          value={name}
+          style={styles.textInput}
+          placeholder="Name"
+        />
+        <InputBox
+          onChangeText={txt => {
+            setEmail(txt);
+          }}
+          value={email}
+          style={styles.textInput}
+          placeholder="Your Email"
+        />
+        <InputBox
+          onChangeText={txt => {
+            setPassword(txt);
+          }}
+          value={password}
+          style={styles.textInput}
+          placeholder="Password"
+          secureTextEntry
+          passwordIcon
+        />
+      </View>
+      <Button
+        title={'Signup'}
+        style={styles.btn}
+        onPress={() => {
+          signupAction();
+        }}
+      />
+      <TouchableOpacity
+        style={{alignSelf: 'center', padding: 10}}
+        onPress={() => naviagtion.navigate('SignIn')}>
+        <Text
+          style={{
+            fontWeight: '700',
+            color: theme.colors.purpal,
+            textDecorationLine: 1,
+          }}>
+          Login
+        </Text>
+      </TouchableOpacity>
+    </KeyboardAwareScrollView>
   );
 };
 export default SignupScreen;
@@ -130,8 +150,7 @@ const styles = StyleSheet.create({
     zIndex: -111,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomRightRadius: theme.SCREENHEIGHT * 7,
-    borderBottomLeftRadius: theme.SCREENHEIGHT * 2,
+    borderBottomRightRadius: Platform.OS === 'android' ? 180 : 200,
   },
   lastView: {
     height: '50%',
@@ -145,7 +164,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: theme.SCREENWIDTH - scale(70),
-    elevation: 15,
+    elevation: 5,
     paddingLeft: 15,
   },
   btn: {
