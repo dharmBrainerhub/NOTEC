@@ -1,8 +1,6 @@
 import {
   Dimensions,
-  KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -10,14 +8,15 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
-
 import {Button, InputBox, Title} from '../../components';
 import {scale, theme} from '../../utils';
 import {usersCollection} from '../../utils/FirebaseServices';
 import {useNavigation} from '@react-navigation/native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width;
+
 const SignupScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

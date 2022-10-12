@@ -16,8 +16,8 @@ const theme = {
     white: '#FFFFFF',
     black: '#000000',
     gray: '#9E9E9E',
-    purpal:'#663399'
-   
+    purpal: '#663399',
+    lightpurpal: '#CBC3E3',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,
