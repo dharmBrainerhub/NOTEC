@@ -9,7 +9,7 @@ const Stack = createNativeStackNavigator();
 const MianStack = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="onBoardingScreen">
+      <Stack.Navigator initialRouteName="SignUp">
         <Stack.Screen
           name="onBoardingScreen"
           component={OnboardingScreen}

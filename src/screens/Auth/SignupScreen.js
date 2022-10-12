@@ -8,14 +8,55 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
+import auth from '@react-native-firebase/auth';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {Button, InputBox, Title} from '../../components';
 import {scale, theme} from '../../utils';
-const h = Dimensions.get('screen').height;
-const w = Dimensions.get('screen').width;
+import { usersCollection } from '../../utils/FirebaseServices';
+const h = Dimensions.get('window').height;
+const w = Dimensions.get('window').width;
 const SignupScreen = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const signupAction = () => {
+    auth()
+      .createUserWithEmailAndPassword(
+        email,
+        password,
+      )
+      .then((res) => {
+        let user = {
+          userName:name,
+          email:res.user.email,
+          image:res.additionalUserInfo.profile,
+          _id:res.user.uid,
+          created_at:new Date()
+        }
+        usersCollection.doc(res.user.uid).set(user).then((response)=>{
+          console.log('response firestore  >> ',response)
+        }).catch((e)=>{
+          console.log('catch >> ',e)
+
+        }).finally((f)=>{
+          console.log('final >> ',f)
+        })
+        console.log('User account created & signed in!');
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!');
+        }
+
+        if (error.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!');
+        }
+        console.error(error);
+      });
+  };
   return (
     <KeyboardAvoidingView
       style={{flex: 1, backgroundColor: theme.colors.white}}>
@@ -38,11 +79,40 @@ const SignupScreen = () => {
             alignSelf: 'center',
             marginTop: h * 0.4,
           }}>
-          <InputBox style={styles.textInput} placeholder="Name" />
-          <InputBox style={styles.textInput} placeholder="Your Email" />
-          <InputBox style={styles.textInput} placeholder="Password" />
+          <InputBox
+            onChangeText={txt => {
+              setName(txt);
+            }}
+            value={name}
+            style={styles.textInput}
+            placeholder="Name"
+          />
+          <InputBox
+            onChangeText={txt => {
+              setEmail(txt);
+            }}
+            value={email}
+            style={styles.textInput}
+            placeholder="Your Email"
+          />
+          <InputBox
+            onChangeText={txt => {
+              setPassword(txt);
+            }}
+            value={password}
+            style={styles.textInput}
+            placeholder="Password"
+            secureTextEntry
+            passwordIcon
+          />
         </View>
-        <Button title={'Signup'} style={styles.btn} />
+        <Button
+          title={'Signup'}
+          style={styles.btn}
+          onPress={() => {
+            signupAction();
+          }}
+        />
         <View style={styles.lastView} />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -71,19 +141,14 @@ const styles = StyleSheet.create({
     borderRadius: 200,
     bottom: -h * 0.29,
     right: -w * 0.5,
-    zIndex:-11
+    zIndex: -11,
   },
   textInput: {
     width: theme.SCREENWIDTH - scale(70),
-    // borderRadius: 10,
-    // backgroundColor: '#DDA0DD',
     elevation: 15,
-    // marginTop: 20,
-    // fontSize: 18,
     paddingLeft: 15,
-    // fontWeight: '600',
   },
-  btn:{
-    marginTop:scale(25)
-  }
+  btn: {
+    marginTop: scale(25),
+  },
 });
