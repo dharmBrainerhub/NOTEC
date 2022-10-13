@@ -144,7 +144,6 @@ const SignupScreen = () => {
           style={{
             fontWeight: '700',
             color: theme.colors.purpal,
-            textDecorationLine: 1,
           }}>
           Login
         </Text>
