@@ -10,19 +10,7 @@ const Stack = createNativeStackNavigator();
 
 const MianStack = () => {
   const isLogin = useSelector(state => state.UserReducer.login);
-  const [isSkip, setSkip] = useState('');
-  useEffect(async () => {
-    async function fetchData() {
-      const isSkip = await AsyncStorage.getItem('intro');
-      if (isSkip == 'true') {
-        setSkip(true);
-        // navigation.navigate('SignIn');
-      } else {
-        setSkip(false);
-      }
-    }
-    fetchData();
-  }, []);
+  const isSkip = useSelector(state => state.UserReducer.onBoarding);
   return (
     <NavigationContainer>
       <Stack.Navigator

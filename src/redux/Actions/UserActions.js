@@ -8,6 +8,15 @@ export const isLogin = payload => {
   };
 };
 
+export const onBoarding = payload => {
+  console.log('payload of login >>. ', payload);
+  return {
+    type: types.ONBOARDING,
+    payload,
+  };
+};
+
+
 export const logout = () => {
   console.log('logout +++++===');
   auth()
