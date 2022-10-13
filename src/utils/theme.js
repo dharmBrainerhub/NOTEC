@@ -18,6 +18,7 @@ const theme = {
     gray: '#9E9E9E',
     purpal: '#663399',
     lightpurpal: '#CBC3E3',
+    red: '#FF0000',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,

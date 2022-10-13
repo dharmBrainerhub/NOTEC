@@ -19,7 +19,8 @@ const w = Dimensions.get('window').width;
 
 const SignupScreen = () => {
   const naviagtion = useNavigation();
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setLoadding] = useState(false);
@@ -33,7 +34,8 @@ const SignupScreen = () => {
         .createUserWithEmailAndPassword(email, password)
         .then(res => {
           let user = {
-            userName: name,
+            first_name: firstName,
+            last_name: lastName,
             email: res.user.email,
             image: res.additionalUserInfo.profile,
             _id: res.user.uid,
@@ -119,11 +121,19 @@ const SignupScreen = () => {
         }}>
         <InputBox
           onChangeText={txt => {
-            setName(txt);
+            setFirstName(txt);
           }}
-          value={name}
+          value={firstName}
           style={styles.textInput}
-          placeholder="Name"
+          placeholder="First Name"
+        />
+        <InputBox
+          onChangeText={txt => {
+            setLastName(txt);
+          }}
+          value={lastName}
+          style={styles.textInput}
+          placeholder="Last Name"
         />
         <InputBox
           onChangeText={txt => {
@@ -164,7 +174,7 @@ const SignupScreen = () => {
       </TouchableOpacity>
       {isLoading && <Loader loading={isLoading} />}
       {show && (
-        <AlertModel title="Signup" subtitle={errorMsg} close={closeModel} />
+        <AlertModel title="Signup" subTitle={errorMsg} close={closeModel} />
       )}
     </KeyboardAwareScrollView>
   );

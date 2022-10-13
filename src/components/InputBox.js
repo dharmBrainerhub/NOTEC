@@ -26,6 +26,7 @@ const InputBox = props => {
     returnKeyType,
     Img,
     passwordIcon,
+    editable,
   } = props;
   const [showpassword, setShowpassword] = React.useState(false);
   //   TextInput.defaultProps.selectionColor = theme.colors.black;
@@ -72,7 +73,7 @@ const InputBox = props => {
         }
         style={[styles.input, inputStyle]}
         maxLength={maxLength}
-        editable={props.editable}
+        editable={editable}
         numberOfLines={numberOfLines}
         blurOnSubmit={blurOnSubmit}
         textAlignVertical={props.textAlignVertical}

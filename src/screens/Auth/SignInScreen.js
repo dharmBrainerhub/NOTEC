@@ -42,23 +42,24 @@ const SignInScreen = () => {
           });
         })
         .catch(e => {
-          setLoader(false);
-          if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
-            setShow(true);
-            setErrormsg('That email address is already in use!');
-          }
+          setShow(true);
+          setErrormsg('Enter data is wrong');
+          // if (error.code === 'auth/email-already-in-use') {
+          //   console.log('That email address is already in use!');
+          //   setShow(true);
+          //   setErrormsg('That email address is already in use!');
+          // }
 
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-            setShow(true);
-            setErrormsg('That email address is invalid!');
-          }
-          if (error.code === 'auth/weak-password') {
-            console.log('The given password is invalid.');
-            setShow(true);
-            setErrormsg('The given password is invalid.');
-          }
+          // if (error.code === 'auth/invalid-email') {
+          //   console.log('That email address is invalid!');
+          //   setShow(true);
+          //   setErrormsg('That email address is invalid!');
+          // }
+          // if (error.code === 'auth/weak-password') {
+          //   console.log('The given password is invalid.');
+          //   setShow(true);
+          //   setErrormsg('The given password is invalid.');
+          // }
           console.log('error ', e);
         })
         .finally(f => {
@@ -70,6 +71,7 @@ const SignInScreen = () => {
       console.log('error try', error);
     }
   };
+  console.log('error msg', errorMsg);
   const closeModel = () => {
     setShow(false);
     setErrormsg('');
@@ -131,7 +133,7 @@ const SignInScreen = () => {
       </TouchableOpacity>
       {loader && <Loader loading={loader} />}
       {show && (
-        <AlertModel title="Login" subtitle={errorMsg} close={closeModel} />
+        <AlertModel title="Login" subTitle={errorMsg} close={closeModel} />
       )}
     </KeyboardAwareScrollView>
   );

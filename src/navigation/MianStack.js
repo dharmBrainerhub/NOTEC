@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Signup, Home, SignIn} from '../screens';
+import {Signup, Home, SignIn, Profile, NoteDescription} from '../screens';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import {useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,6 +35,16 @@ const MianStack = () => {
         <Stack.Screen
           name="SignIn"
           component={SignIn}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Notedescription"
+          component={NoteDescription}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

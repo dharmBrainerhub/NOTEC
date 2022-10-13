@@ -7,7 +7,7 @@ export default HomeScreen = () => {
   const userInfo = useSelector(state => state.UserReducer);
   console.log('user info ', userInfo);
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <NoteScreen />
     </SafeAreaView>
   );
