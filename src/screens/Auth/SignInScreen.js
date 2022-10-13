@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {Button, InputBox, Loader, Title} from '../../components';
+import {AlertModel, Button, InputBox, Loader, Title} from '../../components';
 import {scale, theme} from '../../utils';
 import {useNavigation} from '@react-navigation/native';
 const h = Dimensions.get('screen').height;
@@ -22,7 +22,8 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loader, setLoader] = useState(false);
-
+  const [show, setShow] = useState(false);
+  const [errorMsg, setErrormsg] = useState('');
   const dispatch = useDispatch();
 
   const handleLogin = async () => {
@@ -42,6 +43,22 @@ const SignInScreen = () => {
         })
         .catch(e => {
           setLoader(false);
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+            setShow(true);
+            setErrormsg('That email address is already in use!');
+          }
+
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+            setShow(true);
+            setErrormsg('That email address is invalid!');
+          }
+          if (error.code === 'auth/weak-password') {
+            console.log('The given password is invalid.');
+            setShow(true);
+            setErrormsg('The given password is invalid.');
+          }
           console.log('error ', e);
         })
         .finally(f => {
@@ -53,7 +70,10 @@ const SignInScreen = () => {
       console.log('error try', error);
     }
   };
-
+  const closeModel = () => {
+    setShow(false);
+    setErrormsg('');
+  };
   const navigation = useNavigation();
   return (
     <KeyboardAwareScrollView
@@ -103,10 +123,16 @@ const SignInScreen = () => {
           handleLogin();
         }}
       />
-      <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('SignUp');
+        }}>
         <Text style={styles.loginText}>Create new Account</Text>
       </TouchableOpacity>
       {loader && <Loader loading={loader} />}
+      {show && (
+        <AlertModel title="Login" subtitle={errorMsg} close={closeModel} />
+      )}
     </KeyboardAwareScrollView>
   );
 };

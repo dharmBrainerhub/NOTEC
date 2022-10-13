@@ -6,14 +6,17 @@ import CustomIcon from '../../components/CustomIcon';
 import Feather from 'react-native-vector-icons/Feather';
 import {InputBox, Label} from '../../components';
 import * as Animatable from 'react-native-animatable';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {CustomModal} from '../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
 
 const NoteScreen = props => {
   const [searchInput, setSearchInput] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const userInfo = useSelector(state => state.UserReducer.userDetails);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   console.log('user info ', userInfo);
   return (
     <View style={{paddingHorizontal: 10}}>

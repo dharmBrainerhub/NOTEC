@@ -30,6 +30,13 @@
             {
               "client_id": "1093744069883-reeg17ake9991qmd5mfv55et51rrvf15.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1093744069883-p4jn5q5hc7g9sv9hudv91ru5rtkfbn3s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.note.ios"
+              }
             }
           ]
         }

@@ -6,14 +6,14 @@ import {scale, theme} from '../../utils';
 import {Label} from './Label';
 
 const Loader = props => {
-  const {loading} = props;
+  const {loading, background} = props;
   return (
     <Modal
       transparent={loading}
       animationType={'none'}
       visible={loading}
       onRequestClose={() => {}}>
-      <View style={styles.modalBackground}>
+      <View style={[styles.modalBackground, background]}>
         <View style={styles.activityIndicatorWrapper}>
           <LottieView
             source={{

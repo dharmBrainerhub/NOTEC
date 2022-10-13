@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
-import {Button, InputBox, Title} from '../../components';
+import {AlertModel, Button, InputBox, Loader, Title} from '../../components';
 import {scale, theme} from '../../utils';
 import {usersCollection} from '../../utils/FirebaseServices';
 import {useNavigation} from '@react-navigation/native';
@@ -18,61 +18,75 @@ const h = Dimensions.get('window').height;
 const w = Dimensions.get('window').width;
 
 const SignupScreen = () => {
+  const naviagtion = useNavigation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const naviagtion = useNavigation();
+  const [isLoading, setLoadding] = useState(false);
   const [show, setShow] = useState(false);
   const [errorMsg, setErrormsg] = useState('');
 
   const signupAction = () => {
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(res => {
-        let user = {
-          userName: name,
-          email: res.user.email,
-          image: res.additionalUserInfo.profile,
-          _id: res.user.uid,
-          created_at: new Date(),
-        };
-        usersCollection
-          .doc(res.user.uid)
-          .set(user)
-          .then(response => {
-            console.log('response firestore  >> ', response);
-          })
-          .catch(e => {
-            console.log('catch >> ', e);
-          })
-          .finally(f => {
-            console.log('final >> ', f);
-          });
+    setLoadding(true);
+    try {
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(res => {
+          let user = {
+            userName: name,
+            email: res.user.email,
+            image: res.additionalUserInfo.profile,
+            _id: res.user.uid,
+            created_at: new Date(),
+          };
+          usersCollection
+            .doc(res.user.uid)
+            .set(user)
+            .then(response => {
+              setLoadding(false);
+              console.log('response firestore  >> ', response);
+            })
+            .catch(e => {
+              setLoadding(false);
+              console.log('catch >> ', e);
+            })
+            .finally(f => {
+              setLoadding(false);
+              console.log('final >> ', f);
+            });
 
-        console.log('User account created & signed in!');
-        naviagtion.navigate('SignIn');
-      })
-      .catch(error => {
-        if (error.code === 'auth/email-already-in-use') {
-          console.log('That email address is already in use!');
-          setShow(true);
-          setErrormsg('That email address is already in use!');
-        }
+          console.log('User account created & signed in!');
+          naviagtion.navigate('SignIn');
+        })
+        .catch(error => {
+          setLoadding(false);
+          if (error.code === 'auth/email-already-in-use') {
+            console.log('That email address is already in use!');
+            clearAlert('That email address is already in use!');
+          }
 
-        if (error.code === 'auth/invalid-email') {
-          console.log('That email address is invalid!');
-          setShow(true);
-          setErrormsg('That email address is invalid!');
-        }
-        if (error.code === 'auth/weak-password') {
-          console.log('The given password is invalid.');
-          setShow(true);
-          setErrormsg('The given password is invalid.');
-        }
-
-        console.error(error);
-      });
+          if (error.code === 'auth/invalid-email') {
+            console.log('That email address is invalid!');
+            clearAlert('That email address is invalid!');
+          }
+          if (error.code === 'auth/weak-password') {
+            console.log('The given password is invalid.');
+            clearAlert('The given password is invalid.');
+          }
+          console.error(error);
+        });
+    } catch (error) {
+      console.log('error', error);
+    }
   };
+
+  const clearAlert = desc => {
+    setTimeout(() => {
+      setShow(true);
+      setErrormsg(desc);
+    }, 350);
+  };
+
   const closeModel = () => {
     setShow(false);
     setErrormsg('');
@@ -148,6 +162,10 @@ const SignupScreen = () => {
           Login
         </Text>
       </TouchableOpacity>
+      {isLoading && <Loader loading={isLoading} />}
+      {show && (
+        <AlertModel title="Signup" subtitle={errorMsg} close={closeModel} />
+      )}
     </KeyboardAwareScrollView>
   );
 };
