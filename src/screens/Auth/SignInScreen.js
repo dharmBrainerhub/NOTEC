@@ -26,6 +26,10 @@ const SignInScreen = () => {
   const [errorMsg, setErrormsg] = useState('');
   const dispatch = useDispatch();
 
+  const clearFilds = () => {
+    setEmail('');
+    setPassword('');
+  };
   const handleLogin = async () => {
     try {
       setLoader(true);
@@ -35,32 +39,27 @@ const SignInScreen = () => {
           let userId = res.user.uid;
           usersCollection.doc(userId).onSnapshot(documentSnapshot => {
             setLoader(false);
+            clearFilds();
             dispatch(userData(documentSnapshot.data()));
             dispatch(isLogin(true));
             navigation.navigate('Home');
             console.log('login user data >> ', documentSnapshot.data());
           });
         })
-        .catch(e => {
-          setShow(true);
-          setErrormsg('Enter data is wrong');
-          // if (error.code === 'auth/email-already-in-use') {
-          //   console.log('That email address is already in use!');
-          //   setShow(true);
-          //   setErrormsg('That email address is already in use!');
-          // }
-
-          // if (error.code === 'auth/invalid-email') {
-          //   console.log('That email address is invalid!');
-          //   setShow(true);
-          //   setErrormsg('That email address is invalid!');
-          // }
-          // if (error.code === 'auth/weak-password') {
-          //   console.log('The given password is invalid.');
-          //   setShow(true);
-          //   setErrormsg('The given password is invalid.');
-          // }
-          console.log('error ', e);
+        .catch(error => {
+          if (error.code === 'auth/user-not-found') {
+            setShow(true);
+            setErrormsg('That email address is not found!');
+          } else if (error.code === 'auth/wrong-password') {
+            setShow(true);
+            setErrormsg(
+              'The password is invalid or the user does not have a password.',
+            );
+          } else {
+            setShow(true);
+            setErrormsg('Enter data is wrong');
+          }
+          console.log('error ', error);
         })
         .finally(f => {
           setLoader(false);

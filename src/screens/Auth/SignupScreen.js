@@ -27,6 +27,13 @@ const SignupScreen = () => {
   const [show, setShow] = useState(false);
   const [errorMsg, setErrormsg] = useState('');
 
+  const clearFilds = () => {
+    setEmail('');
+    setPassword('');
+    setFirstName('');
+    setLastName('');
+  };
+
   const signupAction = () => {
     setLoadding(true);
     try {
@@ -45,7 +52,9 @@ const SignupScreen = () => {
             .doc(res.user.uid)
             .set(user)
             .then(response => {
+              clearFilds();
               setLoadding(false);
+              naviagtion.navigate('SignIn');
               console.log('response firestore  >> ', response);
             })
             .catch(e => {
@@ -58,7 +67,6 @@ const SignupScreen = () => {
             });
 
           console.log('User account created & signed in!');
-          naviagtion.navigate('SignIn');
         })
         .catch(error => {
           setLoadding(false);
