@@ -1,7 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Signup, Home, SignIn, Profile, NoteDescription} from '../screens';
+import {
+  Signup,
+  Home,
+  SignIn,
+  Profile,
+  NoteDescription,
+  CreateNote,
+} from '../screens';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import {useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -45,6 +52,11 @@ const MianStack = () => {
         <Stack.Screen
           name="Notedescription"
           component={NoteDescription}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CreateNote"
+          component={CreateNote}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

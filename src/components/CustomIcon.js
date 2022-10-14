@@ -11,7 +11,7 @@ export default CustomIcon = props => {
         {
           padding: 10,
           borderRadius: 5,
-          backgroundColor: theme.colors.lightpurpal,
+          backgroundColor: theme.colors.purpal,
           marginHorizontal: 5,
         },
         style,

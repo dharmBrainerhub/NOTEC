@@ -7,8 +7,7 @@ const NoteCard = props => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor:
-          index % 2 === 0 ? theme.colors.lightpurpal : theme.colors.white,
+        backgroundColor: index % 2 === 0 ? theme.colors.lightpurpal : '#DCEDFB',
         margin: 8,
         paddingVertical: 20,
         paddingHorizontal: 20,

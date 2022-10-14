@@ -102,7 +102,7 @@ const NoteScreen = props => {
           <Title title={item.title} />
           <Label
             title={item.descrption}
-            style={{marginTop: 3}}
+            style={{marginTop: 3, fontWeight: '300', color: '#333'}}
             numberOfLines={2}
           />
         </NoteCard>
@@ -111,7 +111,12 @@ const NoteScreen = props => {
   };
 
   return (
-    <View style={{paddingHorizontal: 10, flex: 1}}>
+    <View
+      style={{
+        paddingHorizontal: 10,
+        flex: 1,
+        backgroundColor: theme.colors.white,
+      }}>
       <View style={styles.headerView}>
         <View>
           <Title
@@ -124,7 +129,7 @@ const NoteScreen = props => {
           />
           <Label
             title={`Welcome ${userInfo?.first_name}`}
-            style={{color: theme.colors.lightpurpal, fontWeight: '700'}}
+            style={{color: theme.colors.purpal, fontWeight: '300'}}
           />
         </View>
 
@@ -165,7 +170,11 @@ const NoteScreen = props => {
         keyExtractor={item => item.id}
       />
 
-      <RoundIcon style={styles.roundIcon} onPress={() => {}} />
+      <RoundIcon
+        style={styles.roundIcon}
+        onPress={() => navigation.navigate('CreateNote')}
+        name={'plus'}
+      />
     </View>
   );
 };
@@ -186,5 +195,6 @@ const styles = StyleSheet.create({
   roundIcon: {
     bottom: 20,
     right: 25,
+    position: 'absolute',
   },
 });
