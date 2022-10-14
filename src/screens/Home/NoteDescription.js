@@ -1,20 +1,50 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {theme} from '../../utils';
-import {InputBox, Label, Header} from '../../components';
+import {scale, theme} from '../../utils';
+import {InputBox, Label, Header, Title} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 
 const NoteDescription = ({route}) => {
-  const {item} = route.params;
+  const {item, iconStyle} = route.params;
   const navigation = useNavigation();
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
       {console.log('fcghfhjgvhkg', item)}
       <Header
         onPress={() => navigation.goBack()}
-        HeaderTitle={'Note Description'}
+        // HeaderTitle={'Note Description'}
+        iconStyle={styles.iconStyle}
       />
-      <Text>{item.title}</Text>
+      <View style={{padding: 20}}>
+        <View
+          style={{
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Title
+            title={capitalizeFirstLetter(item.title)}
+            style={{fontSize: 30, marginTop: 10}}
+          />
+          <View>
+            <Label
+              title="Created at"
+              style={{opacity: 0.5, fontSize: scale(12)}}
+            />
+            <Label
+              title="10/10/2022"
+              style={{opacity: 0.5, fontSize: scale(10)}}
+            />
+          </View>
+        </View>
+        <Label
+          title={item.descrption}
+          style={{marginTop: scale(15), fontWeight: '300', fontSize: scale(13)}}
+        />
+      </View>
     </View>
   );
 };

@@ -6,7 +6,7 @@ import {scale, theme} from '../utils';
 import * as Animatable from 'react-native-animatable';
 
 const HeaderComponent = props => {
-  const {onPress, HeaderTitle} = props;
+  const {onPress, HeaderTitle, iconStyle} = props;
   return (
     <Animatable.View animation="fadeInDown">
       <SafeAreaView
@@ -28,6 +28,7 @@ const HeaderComponent = props => {
             color={theme.colors.white}
             size={scale(25)}
             onPress={onPress}
+            style={[iconStyle, {left: scale(-9.5)}]}
           />
           <Label
             style={{
