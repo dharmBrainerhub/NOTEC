@@ -138,7 +138,7 @@ const SignupScreen = () => {
         <InputBox
           onChangeText={txt => {
             setLastName(txt);
-          }}
+          }} 
           value={lastName}
           style={styles.textInput}
           placeholder="Last Name"

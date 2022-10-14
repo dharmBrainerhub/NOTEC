@@ -8,8 +8,9 @@ import {InputBox, Label, Title, NoteCard} from '../../components';
 import * as Animatable from 'react-native-animatable';
 import {useDispatch, useSelector} from 'react-redux';
 import {CustomModal} from '../../components';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import RoundIcon from '../../components/RoundIcon';
 
 const noteData = [
   {
@@ -18,6 +19,48 @@ const noteData = [
     descrption:
       'hello this is the first descrption hello this is the first descrption hello this is the first descrption hello this is the first descrption',
     color: '#663399',
+    date: new Date(),
+  },
+  {
+    id: 2,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
+    date: new Date(),
+  },
+  {
+    id: 3,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
+    date: new Date(),
+  },
+  {
+    id: 4,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
+    date: new Date(),
+  },
+  {
+    id: 2,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
+    date: new Date(),
+  },
+  {
+    id: 3,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
+    date: new Date(),
+  },
+  {
+    id: 4,
+    title: 'second note',
+    descrption: 'hello this is the first descrption',
+    color: '#CBC3E3',
     date: new Date(),
   },
   {
@@ -116,10 +159,13 @@ const NoteScreen = props => {
       )}
 
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={noteData}
         renderItem={RenderNote}
         keyExtractor={item => item.id}
       />
+
+      <RoundIcon style={styles.roundIcon} onPress={() => {}} />
     </View>
   );
 };
@@ -136,5 +182,9 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     // width: '80%',
+  },
+  roundIcon: {
+    bottom: 20,
+    right: 25,
   },
 });
