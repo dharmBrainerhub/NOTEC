@@ -1,107 +1,60 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {theme} from '../../utils';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import LottieView from 'lottie-react-native';
 import CustomIcon from '../../components/CustomIcon';
 import Feather from 'react-native-vector-icons/Feather';
-import {InputBox, Label, Title, NoteCard} from '../../components';
+import {InputBox, Label, Title, NoteCard, Loader} from '../../components';
 import * as Animatable from 'react-native-animatable';
 import {useDispatch, useSelector} from 'react-redux';
 import {CustomModal} from '../../components';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RoundIcon from '../../components/RoundIcon';
-
-const noteData = [
-  {
-    id: 1,
-    title: 'first note',
-    descrption:
-      'hello this is the first descrption hello this is the first descrption hello this is the first descrption hello this is the first descrption',
-    color: '#663399',
-    date: new Date(),
-  },
-  {
-    id: 2,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 3,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 4,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 2,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 3,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 4,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 2,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 3,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-  {
-    id: 4,
-    title: 'second note',
-    descrption: 'hello this is the first descrption',
-    color: '#CBC3E3',
-    date: new Date(),
-  },
-];
-
+import {getUserNote, noteLoadding} from '../../redux/Actions/NoteActions';
+import {noteCollection} from '../../utils/FirebaseServices';
 const NoteScreen = props => {
   const [searchInput, setSearchInput] = useState(false);
+  const [load, setLoadding] = useState(false);
+  const [noteDatas, setNoteData] = useState([]);
+  const [noData, setNodata] = useState(false);
   const userInfo = useSelector(state => state.UserReducer.userDetails);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  console.log('user info ', userInfo);
+  const noteData = useSelector(state => state.NoteReducers.noteData);
+
+  const getNote = async () => {
+    setLoadding(true);
+    noteCollection.doc(userInfo?._id).onSnapshot(async documentSnapshot => {
+      if (documentSnapshot.exists) {
+        const notes = await documentSnapshot.data();
+        console.log('notesnotesnotes', notes);
+        setNoteData(notes.data?.reverse());
+        setLoadding(false);
+        setNodata(false);
+      } else {
+        setNodata(true);
+        setLoadding(false);
+      }
+    });
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getNote();
+    }, []),
+  );
+
   const RenderNote = ({item, index}) => {
     return (
       <View>
-        {console.log(JSON.stringify(item.item, null, 2))}
         <NoteCard
           index={index}
           onPress={() => navigation.navigate('Notedescription', {item})}>
-          <Title title={item.title} />
+          <Title title={item?.title} />
           <Label
-            title={item.descrption}
+            title={item?.desc}
             style={{marginTop: 3, fontWeight: '300', color: '#333'}}
             numberOfLines={2}
           />
@@ -162,19 +115,31 @@ const NoteScreen = props => {
           <InputBox />
         </Animatable.View>
       )}
-
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        data={noteData}
-        renderItem={RenderNote}
-        keyExtractor={item => item.id}
-      />
+      {noData ? (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <LottieView
+            source={{
+              uri: 'https://assets5.lottiefiles.com/packages/lf20_hynobukt.json',
+            }}
+            autoPlay
+            loop={false}
+          />
+        </View>
+      ) : (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={noteDatas}
+          renderItem={RenderNote}
+          keyExtractor={item => item.id}
+        />
+      )}
 
       <RoundIcon
         style={styles.roundIcon}
-        onPress={() => navigation.navigate('CreateNote')}
+        onPress={() => navigation.navigate('CreateNote', {userInfo})}
         name={'plus'}
       />
+      <Loader loading={load} />
     </View>
   );
 };

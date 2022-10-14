@@ -30,6 +30,10 @@ export default (state = initialState, action) => {
       return {
         initialState,
       };
+    case types.DELETEACCOUNT:
+      return {
+        initialState,
+      };
     default:
       return state;
   }

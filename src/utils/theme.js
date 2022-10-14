@@ -19,6 +19,7 @@ const theme = {
     purpal: '#002a4c',
     lightpurpal: '#F4FAFF',
     red: '#FF0000',
+    lightBlue: '#DCEDFB',
   },
   SCREENWIDTH: width,
   SCREENHEIGHT: height,

@@ -5,11 +5,9 @@ const usersCollection = firestore().collection('Users');
 const noteCollection = firestore().collection('Notes');
 
 const getUrserDetails = async userId => {
-  let userInfo = usersCollection
+  return usersCollection
     .doc(userId)
     .onSnapshot(documentSnapshot => documentSnapshot.data());
-  console.log('userInfouserInfo', userInfo);
-  return 'test';
 };
 
 export {usersCollection, noteCollection, getUrserDetails};

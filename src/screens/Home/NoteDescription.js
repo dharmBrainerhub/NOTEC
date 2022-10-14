@@ -35,13 +35,13 @@ const NoteDescription = ({route}) => {
               style={{opacity: 0.5, fontSize: scale(12)}}
             />
             <Label
-              title="10/10/2022"
-              style={{opacity: 0.5, fontSize: scale(10)}}
+              title={item?.date}
+              style={{opacity: 0.5, fontSize: scale(10), left: scale(2)}}
             />
           </View>
         </View>
         <Label
-          title={item.descrption}
+          title={item.desc}
           style={{marginTop: scale(15), fontWeight: '300', fontSize: scale(13)}}
         />
       </View>

@@ -43,7 +43,6 @@ const SignInScreen = () => {
             dispatch(userData(documentSnapshot.data()));
             dispatch(isLogin(true));
             navigation.navigate('Home');
-            console.log('login user data >> ', documentSnapshot.data());
           });
         })
         .catch(error => {
