@@ -1,22 +1,60 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {scale, theme} from '../../utils';
 import {InputBox, Label, Header, Title} from '../../components';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import {noteCollection} from '../../utils/FirebaseServices';
+import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 const NoteDescription = ({route}) => {
-  const {item, iconStyle} = route.params;
+  const {item, noteDatas} = route.params;
+  const [allNotes, setAllnotes] = useState([]);
   const navigation = useNavigation();
+  const userInfo = useSelector(state => state.UserReducer.userDetails);
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+  const handleDelete = async () => {
+    // await noteCollection
+    //   .doc(userInfo?._id)
+    //   .onSnapshot(async documentSnapshot => {
+    //     if (documentSnapshot.exists) {
+    //       const notes = await documentSnapshot.data();
+    //       console.log('notesnotesnotes', notes);
+    //       setAllnotes(notes.data);
+    //     }
+    //   });
+    setAllnotes(noteDatas);
+    let filterData = [];
+    filterData = allNotes?.filter(function (n) {
+      return n?._id != item?._id;
+    });
+
+    console.log('all data ++++ ', filterData);
+    console.log('filterData' + filterData);
+    // noteCollection
+    //   .doc(userInfo?._id)
+    //   .update({
+    //     myArray: FirebaseFirestoreTypes.FieldValue.arrayRemove(item),
+    //   })
+    //   .then(r => {
+    //     alert('Delete note successfully');
+    //     navigation.goBack();
+    //   });
+  };
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
-      {console.log('fcghfhjgvhkg', item)}
       <Header
         onPress={() => navigation.goBack()}
-        // HeaderTitle={'Note Description'}
+        HeaderTitle={'Note Description'}
         iconStyle={styles.iconStyle}
+        iconName="edit"
+        deleteIcon
+        onPressDelete={handleDelete}
+        onPressSave={() => {
+          navigation.replace('CreateNote', {userInfo, edit: item});
+        }}
       />
       <View style={{padding: 20}}>
         <View

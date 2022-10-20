@@ -1,12 +1,20 @@
 import {StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import React from 'react';
 import Feather from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/AntDesign';
 import {Label} from './Label';
 import {scale, theme} from '../utils';
 import * as Animatable from 'react-native-animatable';
 
 const HeaderComponent = props => {
-  const {onPress, HeaderTitle, iconName, onPressSave} = props;
+  const {
+    onPress,
+    HeaderTitle,
+    iconName,
+    onPressSave,
+    onPressDelete,
+    deleteIcon,
+  } = props;
   return (
     <Animatable.View animation="fadeInDown">
       <SafeAreaView
@@ -40,13 +48,22 @@ const HeaderComponent = props => {
               title={HeaderTitle}
             />
           </View>
-          <View>
+          <View style={styles.row}>
             <Feather
               name={iconName}
               color={theme.colors.white}
               size={scale(25)}
               onPress={onPressSave}
             />
+            {deleteIcon && (
+              <Icon
+                name="delete"
+                color={theme.colors.white}
+                size={scale(25)}
+                onPress={onPressDelete}
+                style={{marginHorizontal: scale(5)}}
+              />
+            )}
           </View>
         </View>
       </SafeAreaView>
@@ -56,4 +73,8 @@ const HeaderComponent = props => {
 
 export default HeaderComponent;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+  },
+});

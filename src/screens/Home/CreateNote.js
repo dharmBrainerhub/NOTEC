@@ -22,7 +22,8 @@ const CustomTextInput = props => {
 };
 const CreateNote = ({route}) => {
   const navigation = useNavigation();
-  const {userInfo} = route.params;
+  const {userInfo, edit} = route.params;
+  console.log('edit values >>> ', edit);
   const [title, setTitle] = useState();
   const [descrption, setDescrption] = useState();
   const [loading, setLoading] = useState(false);

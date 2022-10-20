@@ -29,7 +29,6 @@ const NoteScreen = props => {
     noteCollection.doc(userInfo?._id).onSnapshot(async documentSnapshot => {
       if (documentSnapshot.exists) {
         const notes = await documentSnapshot.data();
-        console.log('notesnotesnotes', notes);
         setNoteData(notes.data?.reverse());
         setLoadding(false);
         setNodata(false);
@@ -105,7 +104,9 @@ const NoteScreen = props => {
           <CustomIcon
             iconName="user"
             IconSetName={Feather}
-            onPress={() => navigation.navigate('Profile', {userInfo})}
+            onPress={() =>
+              navigation.navigate('Profile', {userInfo, noteDatas})
+            }
             iconSize={20}
           />
         </View>
