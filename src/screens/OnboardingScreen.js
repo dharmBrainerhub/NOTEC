@@ -93,17 +93,17 @@ const OnboardingScreen = () => {
             image: (
               <Image source={require('../assets/Images/onboarding-img2.png')} />
             ),
-            title: 'Not Just Texts',
-            subtitle: 'Add images, video, recording or any file to your notes',
-          },
-          {
-            backgroundColor: '#fff',
-            image: (
-              <Image source={require('../assets/Images/onboarding-img3.png')} />
-            ),
             title: 'Stay Organised',
-            subtitle: 'Group your notes and keep them organized ',
+            subtitle: 'The digital note-taking app for your devices.',
           },
+          // {
+          //   backgroundColor: '#fff',
+          //   image: (
+          //     <Image source={require('../assets/Images/onboarding-img3.png')} />
+          //   ),
+          //   title: 'Stay Organised',
+          //   subtitle: 'Group your notes and keep them organized ',
+          // },
         ]}
       />
     </>
