@@ -1,5 +1,5 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {scale, theme} from '../../utils';
 import {InputBox, Label, Header, Title} from '../../components';
 import {useNavigation} from '@react-navigation/native';
@@ -8,40 +8,38 @@ import {noteCollection} from '../../utils/FirebaseServices';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 const NoteDescription = ({route}) => {
-  const {item, noteDatas} = route.params;
+  const {item, noteData} = route.params;
   const [allNotes, setAllnotes] = useState([]);
   const navigation = useNavigation();
   const userInfo = useSelector(state => state.UserReducer.userDetails);
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
+  useEffect(() => {
+    setAllnotes(noteData);
+  }, []);
+
   const handleDelete = async () => {
-    // await noteCollection
-    //   .doc(userInfo?._id)
-    //   .onSnapshot(async documentSnapshot => {
-    //     if (documentSnapshot.exists) {
-    //       const notes = await documentSnapshot.data();
-    //       console.log('notesnotesnotes', notes);
-    //       setAllnotes(notes.data);
-    //     }
-    //   });
-    setAllnotes(noteDatas);
     let filterData = [];
     filterData = allNotes?.filter(function (n) {
       return n?._id != item?._id;
     });
-
-    console.log('all data ++++ ', filterData);
-    console.log('filterData' + filterData);
-    // noteCollection
-    //   .doc(userInfo?._id)
-    //   .update({
-    //     myArray: FirebaseFirestoreTypes.FieldValue.arrayRemove(item),
-    //   })
-    //   .then(r => {
-    //     alert('Delete note successfully');
-    //     navigation.goBack();
-    //   });
+    const userId = userInfo?._id;
+    const add = {
+      data: filterData,
+    };
+    noteCollection
+      .doc(userId)
+      .set(add)
+      .then(response => {
+        navigation.goBack();
+      })
+      .catch(e => {
+        console.log('catch >> ', e);
+      })
+      .finally(f => {
+        console.log('final >> ', f);
+      });
   };
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
@@ -53,7 +51,7 @@ const NoteDescription = ({route}) => {
         deleteIcon
         onPressDelete={handleDelete}
         onPressSave={() => {
-          navigation.replace('CreateNote', {userInfo, edit: item});
+          navigation.replace('CreateNote', {item, edit: noteData});
         }}
       />
       <View style={{padding: 20}}>
@@ -65,7 +63,11 @@ const NoteDescription = ({route}) => {
           }}>
           <Title
             title={capitalizeFirstLetter(item.title)}
-            style={{fontSize: 30, marginTop: 10}}
+            style={{
+              fontSize: scale(20),
+              marginTop: 10,
+              width: theme.SCREENWIDTH * 0.7,
+            }}
           />
           <View>
             <Label

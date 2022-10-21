@@ -1,4 +1,11 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Linking,
+} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {theme} from '../../utils';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -14,7 +21,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import RoundIcon from '../../components/RoundIcon';
 import {getUserNote, noteLoadding} from '../../redux/Actions/NoteActions';
 import {noteCollection} from '../../utils/FirebaseServices';
+import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
+import SwipeableFlatList from 'react-native-swipeable-list';
 const NoteScreen = props => {
+  const [visible, setVisible] = useState(false);
   const [searchInput, setSearchInput] = useState(false);
   const [load, setLoadding] = useState(false);
   const [noteDatas, setNoteData] = useState([]);
@@ -23,6 +33,9 @@ const NoteScreen = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const noteData = useSelector(state => state.NoteReducers.noteData);
+  const [datafilter, setDataFilter] = useState([]);
+  const [masterdata, setMasterdata] = useState([]);
+  const [search, setSearch] = useState('');
 
   const getNote = async () => {
     setLoadding(true);
@@ -30,6 +43,8 @@ const NoteScreen = props => {
       if (documentSnapshot.exists) {
         const notes = await documentSnapshot.data();
         setNoteData(notes.data?.reverse());
+        setMasterdata(notes.data?.reverse());
+        setDataFilter(notes.data?.reverse());
         setLoadding(false);
         setNodata(false);
       } else {
@@ -50,7 +65,9 @@ const NoteScreen = props => {
       <View>
         <NoteCard
           index={index}
-          onPress={() => navigation.navigate('Notedescription', {item})}>
+          onPress={() =>
+            navigation.navigate('Notedescription', {item, noteData: noteDatas})
+          }>
           <Title title={item?.title} />
           <Label
             title={item?.desc}
@@ -60,6 +77,61 @@ const NoteScreen = props => {
         </NoteCard>
       </View>
     );
+  };
+
+  const hideMenu = () => setVisible(false);
+
+  const showMenu = () => setVisible(true);
+
+  const ProfileMenu = () => {
+    navigation.navigate('Profile', {userInfo, noteDatas});
+    setVisible(false);
+  };
+
+  const extractItemKey = item => {
+    return item.id?.toString();
+  };
+
+  const deleteItem = itemId => {
+    const newState = [...noteDatas];
+    const filteredState = newState.filter(item => item._id !== itemId);
+    return setNoteData(filteredState);
+  };
+
+  const QuickActions = (index, item) => {
+    return (
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          flex: 1,
+          alignItems: 'flex-end',
+          right: 20,
+        }}
+        onPress={() => {
+          deleteItem(item._id);
+          console.log('first', item);
+        }}>
+        <AntDesign name="delete" size={25} color={theme.colors.purpal} />
+      </TouchableOpacity>
+    );
+  };
+
+  const searchFilter = text => {
+    if (text) {
+      const newData = masterdata.filter(item => {
+        const itemData = item.title
+          ? item.title.toUpperCase()
+          : ''.toUpperCase();
+
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setDataFilter(newData);
+      setSearch(text);
+    } else {
+      setDataFilter(masterdata);
+      setSearch(text);
+    }
   };
 
   return (
@@ -101,19 +173,35 @@ const NoteScreen = props => {
               iconSize={20}
             />
           )}
-          <CustomIcon
-            iconName="user"
-            IconSetName={Feather}
-            onPress={() =>
-              navigation.navigate('Profile', {userInfo, noteDatas})
+
+          <Menu
+            visible={visible}
+            anchor={
+              <CustomIcon
+                iconName="menu"
+                IconSetName={Feather}
+                onPress={() => showMenu()}
+                iconSize={20}
+              />
             }
-            iconSize={20}
-          />
+            onRequestClose={hideMenu}>
+            <MenuItem onPress={ProfileMenu}>
+              <Label title="Profile" />
+            </MenuItem>
+            <MenuItem
+              onPress={() =>
+                Linking.openURL(
+                  'mailto:support@brainerhub.com?subject=Feedback',
+                )
+              }>
+              <Label title="Send Feedback" />
+            </MenuItem>
+          </Menu>
         </View>
       </View>
       {searchInput && (
         <Animatable.View animation="slideInDown">
-          <InputBox />
+          <InputBox value={search} onChangeText={text => searchFilter(text)} />
         </Animatable.View>
       )}
       {noData ? (
@@ -127,11 +215,14 @@ const NoteScreen = props => {
           />
         </View>
       ) : (
-        <FlatList
+        <SwipeableFlatList
           showsVerticalScrollIndicator={false}
-          data={noteDatas}
+          data={datafilter}
           renderItem={RenderNote}
-          keyExtractor={item => item.id}
+          keyExtractor={extractItemKey}
+          maxSwipeDistance={50}
+          shouldBounceOnMount={true}
+          renderQuickActions={({index, item}) => QuickActions(index, item)}
         />
       )}
 
@@ -162,5 +253,10 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 25,
     position: 'absolute',
+  },
+  qaContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });

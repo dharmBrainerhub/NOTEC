@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Header, Loader} from '../../components';
 import {scale, theme} from '../../utils';
 import {addNote, noteLoadding} from '../../redux/Actions/NoteActions';
+import {noteCollection} from '../../utils/FirebaseServices';
 
 const CustomTextInput = props => {
   const {placeholder, numberOfLines, style, onChangeText, value} = props;
@@ -22,8 +23,8 @@ const CustomTextInput = props => {
 };
 const CreateNote = ({route}) => {
   const navigation = useNavigation();
-  const {userInfo, edit} = route.params;
-  console.log('edit values >>> ', edit);
+  const {edit, item} = route.params;
+  const userInfo = useSelector(state => state.UserReducer.userDetails);
   const [title, setTitle] = useState();
   const [descrption, setDescrption] = useState();
   const [loading, setLoading] = useState(false);
@@ -32,30 +33,58 @@ const CreateNote = ({route}) => {
   const isLoad = useSelector(state => {
     state.NoteReducers.isLoadding;
   });
+  useEffect(() => {
+    setTitle(item?.title);
+    setDescrption(item?.desc);
+  }, [edit]);
   const handleNote = async () => {
-    dispatch(noteLoadding(true));
-    setLoading(true);
-    const add = {
-      data: [
-        {
-          title: title.trim(),
-          desc: descrption,
-          date: new Date().toDateString(),
-          color: '',
-          _id: Math.floor(Math.random() * 1145415614635351),
-          user_id: userInfo?._id,
-          create_by: `${userInfo?.first_name} ${userInfo?.last_name}`,
-        },
-      ],
-    };
-    await dispatch(addNote(add));
-    setLoading(false);
-    navigation.navigate('Home');
+    if (edit) {
+      let updateItem = {...item};
+      let updatenote = [...edit];
+      let index = updatenote.findIndex(el => el._id == item._id);
+      updatenote[index].title = title;
+      updatenote[index].desc = descrption;
+      const updateData = {
+        data: updatenote,
+      };
+      const userId = userInfo?._id;
+      noteCollection
+        .doc(userId)
+        .set(updateData)
+        .then(response => {
+          navigation.goBack();
+        })
+        .catch(e => {
+          console.log('catch >> ', e);
+        })
+        .finally(f => {
+          console.log('final >> ', f);
+        });
+    } else {
+      dispatch(noteLoadding(true));
+      setLoading(true);
+      const add = {
+        data: [
+          {
+            title: title.trim(),
+            desc: descrption,
+            date: new Date().toDateString(),
+            color: '',
+            _id: Math.floor(Math.random() * 1145415614635351),
+            user_id: userInfo?._id,
+            create_by: `${userInfo?.first_name} ${userInfo?.last_name}`,
+          },
+        ],
+      };
+      await dispatch(addNote(add));
+      setLoading(false);
+      navigation.navigate('Home');
+    }
   };
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
       <Header
-        HeaderTitle="Create your Note"
+        HeaderTitle={edit ? 'Edit you note' : 'Create your Note'}
         onPress={() => navigation.goBack()}
         iconName={'save'}
         onPressSave={handleNote}
