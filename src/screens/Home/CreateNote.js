@@ -18,6 +18,7 @@ const CustomTextInput = props => {
       onChangeText={onChangeText}
       value={value}
       numberOfLines={numberOfLines}
+      textAlignVertical="top"
     />
   );
 };
@@ -135,6 +136,7 @@ const styles = StyleSheet.create({
     padding: scale(5),
     height: theme.SCREENHEIGHT * 0.3,
     marginTop: theme.SCREENHEIGHT * 0.02,
+    borderWidth: scale(1),
   },
   TextInput: {
     marginTop: 30,

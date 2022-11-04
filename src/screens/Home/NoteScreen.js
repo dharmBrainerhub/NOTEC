@@ -15,11 +15,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import {InputBox, Label, Title, NoteCard, Loader} from '../../components';
 import * as Animatable from 'react-native-animatable';
 import {useDispatch, useSelector} from 'react-redux';
-import {CustomModal} from '../../components';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import RoundIcon from '../../components/RoundIcon';
-import {getUserNote, noteLoadding} from '../../redux/Actions/NoteActions';
 import {noteCollection} from '../../utils/FirebaseServices';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 import SwipeableFlatList from 'react-native-swipeable-list';
@@ -69,11 +67,7 @@ const NoteScreen = props => {
             navigation.navigate('Notedescription', {item, noteData: noteDatas})
           }>
           <Title title={item?.title} />
-          <Label
-            title={item?.desc}
-            style={{marginTop: 3, fontWeight: '300', color: '#333'}}
-            numberOfLines={2}
-          />
+          <Label title={item?.desc} style={styles.desc} numberOfLines={2} />
         </NoteCard>
       </View>
     );
@@ -93,23 +87,41 @@ const NoteScreen = props => {
   };
 
   const deleteItem = itemId => {
-    const newState = [...noteDatas];
-    const filteredState = newState.filter(item => item._id !== itemId);
-    return setNoteData(filteredState);
+    // const newState = [...noteDatas];
+    // const filteredState = newState.filter(item => item._id !== itemId);
+    // return setNoteData(filteredState);
+
+    alert('ca;;;');
+    let filterData = [];
+    filterData = noteDatas?.filter(function (n) {
+      return n?._id != itemId;
+    });
+    const userId = userInfo?._id;
+    const add = {
+      data: filterData,
+    };
+    noteCollection
+      .doc(userId)
+      .set(add)
+      .then(response => {
+        setNoteData(filterData);
+        setMasterdata(filterData);
+        setDataFilter(filterData);
+      })
+      .catch(e => {
+        console.log('catch >> ', e);
+      })
+      .finally(f => {
+        console.log('final >> ', f);
+      });
   };
 
   const QuickActions = (index, item) => {
     return (
       <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          flex: 1,
-          alignItems: 'flex-end',
-          right: 20,
-        }}
+        style={styles.btn}
         onPress={() => {
           deleteItem(item._id);
-          console.log('first', item);
         }}>
         <AntDesign name="delete" size={25} color={theme.colors.purpal} />
       </TouchableOpacity>
@@ -135,29 +147,17 @@ const NoteScreen = props => {
   };
 
   return (
-    <View
-      style={{
-        paddingHorizontal: 10,
-        flex: 1,
-        backgroundColor: theme.colors.white,
-      }}>
+    <View style={styles.main}>
       <View style={styles.headerView}>
         <View>
-          <Title
-            style={{
-              color: theme.colors.purpal,
-              fontSize: 24,
-              fontWeight: '600',
-            }}
-            title="Notes"
-          />
+          <Title style={styles.title} title="Notes" />
           <Label
             title={`Welcome ${userInfo?.first_name}`}
-            style={{color: theme.colors.purpal, fontWeight: '300'}}
+            style={styles.nameing}
           />
         </View>
 
-        <View style={{flexDirection: 'row'}}>
+        <View style={styles.row}>
           {searchInput === true ? (
             <CustomIcon
               iconName="close"
@@ -205,7 +205,7 @@ const NoteScreen = props => {
         </Animatable.View>
       )}
       {noData ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={styles.noData}>
           <LottieView
             source={{
               uri: 'https://assets5.lottiefiles.com/packages/lf20_hynobukt.json',
@@ -259,4 +259,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  btn: {
+    justifyContent: 'center',
+    flex: 1,
+    alignItems: 'flex-end',
+    right: 20,
+  },
+  noData: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  title: {
+    color: theme.colors.purpal,
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  nameing: {color: theme.colors.purpal, fontWeight: '300'},
+  main: {
+    paddingHorizontal: 10,
+    flex: 1,
+    backgroundColor: theme.colors.white,
+  },
+  row: {flexDirection: 'row'},
+  desc: {marginTop: 3, fontWeight: '300', color: '#333'},
 });
