@@ -77,7 +77,7 @@ const doesDocExist = docID => {
     .doc(docID)
     .get()
     .then(doc => {
-      return doc.exists;
+      return doc?.exists;
     });
 };
 

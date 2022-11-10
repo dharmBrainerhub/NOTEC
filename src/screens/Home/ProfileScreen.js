@@ -24,6 +24,7 @@ import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/Feather';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 import {usersCollection} from '../../utils/FirebaseServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = ({route}) => {
   const navigation = useNavigation();
@@ -41,8 +42,10 @@ const ProfileScreen = ({route}) => {
       {
         text: 'Yes',
         onPress: () => {
+          // AsyncStorage.clear();
           dispatch(logout());
           dispatch(isLogin(false));
+
           navigation.navigate('SignIn');
         },
       },

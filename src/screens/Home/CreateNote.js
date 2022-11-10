@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Alert, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Header, Loader} from '../../components';
@@ -26,8 +26,8 @@ const CreateNote = ({route}) => {
   const navigation = useNavigation();
   const {edit, item} = route.params;
   const userInfo = useSelector(state => state.UserReducer.userDetails);
-  const [title, setTitle] = useState();
-  const [descrption, setDescrption] = useState();
+  const [title, setTitle] = useState(null);
+  const [descrption, setDescrption] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -39,47 +39,55 @@ const CreateNote = ({route}) => {
     setDescrption(item?.desc);
   }, [edit]);
   const handleNote = async () => {
-    if (edit) {
-      let updateItem = {...item};
-      let updatenote = [...edit];
-      let index = updatenote.findIndex(el => el._id == item._id);
-      updatenote[index].title = title;
-      updatenote[index].desc = descrption;
-      const updateData = {
-        data: updatenote,
-      };
-      const userId = userInfo?._id;
-      noteCollection
-        .doc(userId)
-        .set(updateData)
-        .then(response => {
-          navigation.goBack();
-        })
-        .catch(e => {
-          console.log('catch >> ', e);
-        })
-        .finally(f => {
-          console.log('final >> ', f);
-        });
+    if (title != null && descrption != null) {
+      if (edit) {
+        setLoading(true);
+        let updateItem = {...item};
+        let updatenote = [...edit];
+        let index = updatenote.findIndex(el => el._id == item._id);
+        updatenote[index].title = title;
+        updatenote[index].desc = descrption;
+        const updateData = {
+          data: updatenote,
+        };
+        const userId = userInfo?._id;
+        noteCollection
+          .doc(userId)
+          .set(updateData)
+          .then(response => {
+            setLoading(false);
+            navigation.goBack();
+          })
+          .catch(e => {
+            setLoading(false);
+            console.log('catch >> ', e);
+          })
+          .finally(f => {
+            console.log('final >> ', f);
+            setLoading(false);
+          });
+      } else {
+        dispatch(noteLoadding(true));
+        setLoading(true);
+        const add = {
+          data: [
+            {
+              title: title.trim(),
+              desc: descrption,
+              date: new Date().toDateString(),
+              color: '',
+              _id: Math.floor(Math.random() * 1145415614635351),
+              user_id: userInfo?._id,
+              create_by: `${userInfo?.first_name} ${userInfo?.last_name}`,
+            },
+          ],
+        };
+        await dispatch(addNote(add));
+        setLoading(false);
+        navigation.navigate('Home');
+      }
     } else {
-      dispatch(noteLoadding(true));
-      setLoading(true);
-      const add = {
-        data: [
-          {
-            title: title.trim(),
-            desc: descrption,
-            date: new Date().toDateString(),
-            color: '',
-            _id: Math.floor(Math.random() * 1145415614635351),
-            user_id: userInfo?._id,
-            create_by: `${userInfo?.first_name} ${userInfo?.last_name}`,
-          },
-        ],
-      };
-      await dispatch(addNote(add));
-      setLoading(false);
-      navigation.navigate('Home');
+      Alert.alert('Must add title and note description');
     }
   };
   return (
@@ -127,6 +135,7 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.purpal,
     fontSize: scale(25),
     padding: scale(5),
+    color: theme.colors.black,
   },
   input1: {
     // borderBottomWidth: scale(1),
@@ -136,7 +145,7 @@ const styles = StyleSheet.create({
     padding: scale(5),
     height: theme.SCREENHEIGHT * 0.3,
     marginTop: theme.SCREENHEIGHT * 0.02,
-    borderWidth: scale(1),
+    color: theme.colors.black,
   },
   TextInput: {
     marginTop: 30,

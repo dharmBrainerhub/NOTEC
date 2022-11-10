@@ -11,6 +11,7 @@ const NoteDescription = ({route}) => {
   const {item, noteData} = route.params;
   const [allNotes, setAllnotes] = useState([]);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const userInfo = useSelector(state => state.UserReducer.userDetails);
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -20,6 +21,7 @@ const NoteDescription = ({route}) => {
   }, []);
 
   const handleDelete = async () => {
+    setLoading(true);
     let filterData = [];
     filterData = allNotes?.filter(function (n) {
       return n?._id != item?._id;
@@ -32,12 +34,16 @@ const NoteDescription = ({route}) => {
       .doc(userId)
       .set(add)
       .then(response => {
+        setLoading(false);
         navigation.goBack();
       })
       .catch(e => {
+        setLoading(false);
+
         console.log('catch >> ', e);
       })
       .finally(f => {
+        setLoading(false);
         console.log('final >> ', f);
       });
   };

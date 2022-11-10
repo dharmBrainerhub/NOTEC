@@ -20,7 +20,6 @@ export default (state = initialState, action) => {
         onBoarding: action.payload,
       };
     case types.USER_DETAILS: {
-      console.log('user ________reducers >>. ', action.payload);
       return {
         ...state,
         userDetails: action.payload,
@@ -28,7 +27,8 @@ export default (state = initialState, action) => {
     }
     case types.LOGOUT:
       return {
-        initialState,
+        ...state,
+        login: action.payload,
       };
     case types.DELETEACCOUNT:
       return {

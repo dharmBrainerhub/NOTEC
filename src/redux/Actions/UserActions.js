@@ -1,6 +1,7 @@
 import * as types from './ActionsTypes';
 import auth from '@react-native-firebase/auth';
 import {noteCollection, usersCollection} from '../../utils/FirebaseServices';
+
 export const isLogin = payload => {
   console.log('payload of login >>. ', payload);
   return {
@@ -18,12 +19,14 @@ export const onBoarding = payload => {
 };
 
 export const logout = () => {
-  console.log('logout +++++===');
   auth()
     .signOut()
-    .then(() => console.log('User signed out!'));
+    .then(() => {
+      console.log('User signed out!');
+    });
   return {
     type: types.LOGOUT,
+    payload: false,
   };
 };
 

@@ -35,58 +35,69 @@ const SignupScreen = () => {
   };
 
   const signupAction = () => {
-    setLoadding(true);
-    try {
-      auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then(res => {
-          let user = {
-            first_name: firstName,
-            last_name: lastName,
-            email: res.user.email,
-            image: res.additionalUserInfo.profile,
-            _id: res.user.uid,
-            created_at: new Date(),
-          };
-          usersCollection
-            .doc(res.user.uid)
-            .set(user)
-            .then(response => {
-              clearFilds();
-              setLoadding(false);
-              naviagtion.navigate('SignIn');
-              console.log('response firestore  >> ', response);
-            })
-            .catch(e => {
-              setLoadding(false);
-              console.log('catch >> ', e);
-            })
-            .finally(f => {
-              setLoadding(false);
-              console.log('final >> ', f);
-            });
+    if (
+      firstName !== '' &&
+      lastName !== '' &&
+      email !== '' &&
+      password !== ''
+    ) {
+      setLoadding(true);
+      try {
+        auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(res => {
+            console.log('resresresresres0>>   0', res);
+            let user = {
+              first_name: firstName,
+              last_name: lastName,
+              email: res.user.email,
+              image: '',
+              _id: res.user.uid,
+              created_at: new Date(),
+            };
+            console.log('user from mail >> ', user);
+            usersCollection
+              .doc(res.user.uid)
+              .set(user)
+              .then(response => {
+                clearFilds();
+                setLoadding(false);
+                naviagtion.navigate('SignIn');
+                console.log('response firestore  >> ', response);
+              })
+              .catch(e => {
+                setLoadding(false);
+                console.log('catch >> ', e);
+              })
+              .finally(f => {
+                setLoadding(false);
+                console.log('final >> ', f);
+              });
 
-          console.log('User account created & signed in!');
-        })
-        .catch(error => {
-          setLoadding(false);
-          if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
-            clearAlert('That email address is already in use!');
-          }
+            console.log('User account created & signed in!');
+          })
+          .catch(error => {
+            setLoadding(false);
+            if (error.code === 'auth/email-already-in-use') {
+              console.log('That email address is already in use!');
+              clearAlert('That email address is already in use!');
+            }
 
-          if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
-            clearAlert('That email address is invalid!');
-          }
-          if (error.code === 'auth/weak-password') {
-            console.log('The given password is invalid.');
-            clearAlert('The given password is invalid.');
-          }
-          console.error(error);
-        });
-    } catch (error) {
-      console.log('error', error);
+            if (error.code === 'auth/invalid-email') {
+              console.log('That email address is invalid!');
+              clearAlert('That email address is invalid!');
+            }
+            if (error.code === 'auth/weak-password') {
+              console.log('The given password is invalid.');
+              clearAlert('The given password is invalid.');
+            }
+            console.error(error);
+          });
+      } catch (error) {
+        console.log('error', error);
+      }
+    } else {
+      alert('All fields are mandatory.');
     }
   };
 
@@ -138,7 +149,7 @@ const SignupScreen = () => {
         <InputBox
           onChangeText={txt => {
             setLastName(txt);
-          }} 
+          }}
           value={lastName}
           style={styles.textInput}
           placeholder="Last Name"

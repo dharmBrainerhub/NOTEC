@@ -21,6 +21,7 @@ import RoundIcon from '../../components/RoundIcon';
 import {noteCollection} from '../../utils/FirebaseServices';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 import SwipeableFlatList from 'react-native-swipeable-list';
+import {isLogin} from '../../redux/Actions/UserActions';
 const NoteScreen = props => {
   const [visible, setVisible] = useState(false);
   const [searchInput, setSearchInput] = useState(false);
@@ -38,13 +39,16 @@ const NoteScreen = props => {
   const getNote = async () => {
     setLoadding(true);
     noteCollection.doc(userInfo?._id).onSnapshot(async documentSnapshot => {
-      if (documentSnapshot.exists) {
+      if (documentSnapshot?.exists) {
         const notes = await documentSnapshot.data();
         setNoteData(notes.data?.reverse());
         setMasterdata(notes.data?.reverse());
         setDataFilter(notes.data?.reverse());
         setLoadding(false);
         setNodata(false);
+        if (notes.data?.length === 0) {
+          setNodata(true);
+        }
       } else {
         setNodata(true);
         setLoadding(false);
@@ -87,11 +91,6 @@ const NoteScreen = props => {
   };
 
   const deleteItem = itemId => {
-    // const newState = [...noteDatas];
-    // const filteredState = newState.filter(item => item._id !== itemId);
-    // return setNoteData(filteredState);
-
-    alert('ca;;;');
     let filterData = [];
     filterData = noteDatas?.filter(function (n) {
       return n?._id != itemId;
@@ -145,7 +144,12 @@ const NoteScreen = props => {
       setSearch(text);
     }
   };
-
+  useEffect(() => {
+    if (userInfo == undefined) {
+      dispatch(isLogin(false));
+      navigation.navigate('SignIn');
+    }
+  }, [userInfo]);
   return (
     <View style={styles.main}>
       <View style={styles.headerView}>
@@ -186,7 +190,7 @@ const NoteScreen = props => {
             }
             onRequestClose={hideMenu}>
             <MenuItem onPress={ProfileMenu}>
-              <Label title="Profile" />
+              <Label title="Profile" style={{color: theme.colors.black}} />
             </MenuItem>
             <MenuItem
               onPress={() =>
@@ -194,7 +198,10 @@ const NoteScreen = props => {
                   'mailto:support@brainerhub.com?subject=Feedback',
                 )
               }>
-              <Label title="Send Feedback" />
+              <Label
+                title="Send Feedback"
+                style={{color: theme.colors.black}}
+              />
             </MenuItem>
           </Menu>
         </View>

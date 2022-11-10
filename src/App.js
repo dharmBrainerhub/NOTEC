@@ -5,6 +5,7 @@ import {store, persistor} from './redux/Store';
 import {PersistGate} from 'redux-persist/integration/react';
 import SplashScreen from 'react-native-splash-screen';
 import {useEffect} from 'react';
+import {Appearance} from 'react-native';
 
 export default App = () => {
   useEffect(() => {

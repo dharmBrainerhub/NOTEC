@@ -17,6 +17,7 @@ import auth from '@react-native-firebase/auth';
 import {getUrserDetails, usersCollection} from '../../utils/FirebaseServices';
 import {useDispatch} from 'react-redux';
 import {isLogin, userData} from '../../redux/Actions/UserActions';
+import {useEffect} from 'react';
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
@@ -27,49 +28,55 @@ const SignInScreen = () => {
   const dispatch = useDispatch();
 
   const clearFilds = () => {
-    setEmail('');
-    setPassword('');
+    setEmail(null);
+    setPassword(null);
   };
+
   const handleLogin = async () => {
-    try {
-      setLoader(true);
-      auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(async res => {
-          let userId = res.user.uid;
-          usersCollection.doc(userId).onSnapshot(documentSnapshot => {
+    if (email !== '' && password !== '') {
+      console.log('inside fearturews >>> ', email + password);
+      try {
+        setLoader(true);
+        auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(async res => {
+            let userId = res.user.uid;
+            usersCollection.doc(userId).onSnapshot(documentSnapshot => {
+              clearFilds();
+              setLoader(false);
+              dispatch(userData(documentSnapshot?.data()));
+              dispatch(isLogin(true));
+              navigation.navigate('Home');
+            });
+          })
+          .catch(error => {
+            if (error.code === 'auth/user-not-found') {
+              setShow(true);
+              setErrormsg('That email address is not found!');
+            } else if (error.code === 'auth/wrong-password') {
+              setShow(true);
+              setErrormsg(
+                'The password is invalid or the user does not have a password.',
+              );
+            } else {
+              setShow(true);
+              setErrormsg('Enter data is wrong');
+            }
+            console.log('error ', error);
+          })
+          .finally(f => {
             setLoader(false);
-            clearFilds();
-            dispatch(userData(documentSnapshot.data()));
-            dispatch(isLogin(true));
-            navigation.navigate('Home');
+            console.log('finally ', f);
           });
-        })
-        .catch(error => {
-          if (error.code === 'auth/user-not-found') {
-            setShow(true);
-            setErrormsg('That email address is not found!');
-          } else if (error.code === 'auth/wrong-password') {
-            setShow(true);
-            setErrormsg(
-              'The password is invalid or the user does not have a password.',
-            );
-          } else {
-            setShow(true);
-            setErrormsg('Enter data is wrong');
-          }
-          console.log('error ', error);
-        })
-        .finally(f => {
-          setLoader(false);
-          console.log('finally ', f);
-        });
-    } catch (error) {
-      setLoader(false);
-      console.log('error try', error);
+      } catch (error) {
+        setLoader(false);
+        console.log('error try', error);
+      }
+    } else {
+      alert('Please enter email and password');
     }
   };
-  console.log('error msg', errorMsg);
+
   const closeModel = () => {
     setShow(false);
     setErrormsg('');
