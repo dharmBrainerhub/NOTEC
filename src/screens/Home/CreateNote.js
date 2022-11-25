@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, Text, TextInput, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {Header, Loader} from '../../components';
+import {AlertModel, Header, Loader} from '../../components';
 import {scale, theme} from '../../utils';
 import {addNote, noteLoadding} from '../../redux/Actions/NoteActions';
 import {noteCollection} from '../../utils/FirebaseServices';
@@ -29,6 +29,8 @@ const CreateNote = ({route}) => {
   const [title, setTitle] = useState(null);
   const [descrption, setDescrption] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+
   const dispatch = useDispatch();
 
   const isLoad = useSelector(state => {
@@ -39,7 +41,13 @@ const CreateNote = ({route}) => {
     setDescrption(item?.desc);
   }, [edit]);
   const handleNote = async () => {
-    if (title != null && descrption != null) {
+    // console.log(title[0]);
+    if (
+      title != null &&
+      descrption != null &&
+      title[0] != ' ' &&
+      descrption[0] != ' '
+    ) {
       if (edit) {
         setLoading(true);
         let updateItem = {...item};
@@ -87,13 +95,14 @@ const CreateNote = ({route}) => {
         navigation.navigate('Home');
       }
     } else {
-      Alert.alert('Must add title and note description');
+      // Alert.alert('Must add title and note description');
+      setShow(true);
     }
   };
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
       <Header
-        HeaderTitle={edit ? 'Edit you note' : 'Create your Note'}
+        HeaderTitle={edit ? 'Edit you note' : 'Create Your Note'}
         onPress={() => navigation.goBack()}
         iconName={'save'}
         onPressSave={handleNote}
@@ -101,19 +110,25 @@ const CreateNote = ({route}) => {
 
       <View style={styles.container}>
         <CustomTextInput
-          placeholder="Note title"
+          placeholder="Note Title"
           numberOfLines={1}
           value={title}
           onChangeText={text => setTitle(text)}
         />
         <CustomTextInput
-          placeholder="Note description..."
+          placeholder="Note Description..."
           value={descrption}
           style={styles.input1}
           onChangeText={text => {
             setDescrption(text);
           }}
           numberOfLines={5}
+        />
+        <AlertModel
+          isVisible={show}
+          title="Blank Note"
+          subTitle="Must add title and note description"
+          close={() => setShow(false)}
         />
       </View>
       {loading && <Loader loading={true} />}
@@ -125,6 +140,7 @@ export default CreateNote;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginTop: theme.SCREENHEIGHT * 0.05,
     width: '85%',
     alignSelf: 'center',
@@ -146,6 +162,7 @@ const styles = StyleSheet.create({
     height: theme.SCREENHEIGHT * 0.3,
     marginTop: theme.SCREENHEIGHT * 0.02,
     color: theme.colors.black,
+    flex: 1,
   },
   TextInput: {
     marginTop: 30,

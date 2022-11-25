@@ -68,7 +68,7 @@ const NoteDescription = ({route}) => {
             alignItems: 'center',
           }}>
           <Title
-            title={capitalizeFirstLetter(item.title)}
+            title={item.title}
             style={{
               fontSize: scale(20),
               marginTop: 10,

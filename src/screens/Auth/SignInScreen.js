@@ -121,6 +121,7 @@ const SignInScreen = () => {
           placeholder="Password"
           secureTextEntry
           passwordIcon
+          maxLength={6}
         />
       </View>
       <Button

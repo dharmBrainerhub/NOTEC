@@ -20,7 +20,11 @@ const AlertModel = props => {
           </View>
           <View style={styles.divider} />
           <View style={styles.subTitleView}>
-            <Label title={subTitle} numberOfLines={3} style={{top: scale(5)}} />
+            <Label
+              title={subTitle}
+              numberOfLines={3}
+              style={styles.discripation}
+            />
           </View>
         </View>
       </View>
@@ -64,6 +68,11 @@ const styles = StyleSheet.create({
   },
   subTitleView: {
     paddingVertical: scale(20),
+    color: theme.colors.black,
+  },
+  discripation: {
+    top: scale(5),
+    color: theme.colors.black,
   },
 });
 
