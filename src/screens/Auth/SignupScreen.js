@@ -26,7 +26,6 @@ const SignupScreen = () => {
   const [isLoading, setLoadding] = useState(false);
   const [show, setShow] = useState(false);
   const [errorMsg, setErrormsg] = useState('');
-  const [error, setError] = useState('');
 
   const clearFilds = () => {
     setEmail('');
@@ -81,19 +80,16 @@ const SignupScreen = () => {
             setLoadding(false);
             if (error.code === 'auth/email-already-in-use') {
               console.log('That email address is already in use!');
-              clearAlert(
-                'That email address is already in use!',
-                setError(error),
-              );
+              clearAlert('That email address is already in use!');
             }
 
             if (error.code === 'auth/invalid-email') {
               console.log('That email address is invalid!');
-              clearAlert('That email address is invalid!', setError(error));
+              clearAlert('That email address is invalid!');
             }
             if (error.code === 'auth/weak-password') {
               console.log('The given password is invalid.');
-              clearAlert('The given password is invalid.', setError(error));
+              clearAlert('The given password is invalid.');
             }
             console.error(error);
           });
@@ -101,8 +97,7 @@ const SignupScreen = () => {
         console.log('error', error);
       }
     } else {
-      // alert(error);
-      // <Text>{error}</Text>;
+      alert('All fields are mandatory.');
     }
   };
 
@@ -143,16 +138,6 @@ const SignupScreen = () => {
           alignSelf: 'center',
           marginTop: h * 0.4,
         }}>
-        {error ? (
-          <Text
-            style={{
-              color: 'red',
-              fontSize: 25,
-            }}>
-            {'error'}
-          </Text>
-        ) : null}
-
         <InputBox
           onChangeText={txt => {
             setFirstName(txt);
@@ -186,7 +171,6 @@ const SignupScreen = () => {
           placeholder="Password"
           secureTextEntry
           passwordIcon
-          maxLength={6}
         />
       </View>
       <Button

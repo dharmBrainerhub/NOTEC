@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   View,
   Linking,
+  Alert,
+  DevSettings,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {theme} from '../../utils';
@@ -22,6 +24,12 @@ import {noteCollection} from '../../utils/FirebaseServices';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 import SwipeableFlatList from 'react-native-swipeable-list';
 import {isLogin} from '../../redux/Actions/UserActions';
+const colorEmphasis = {
+  high: 0.87,
+  medium: 0.6,
+  disabled: 0.38,
+};
+
 const NoteScreen = props => {
   const [visible, setVisible] = useState(false);
   const [searchInput, setSearchInput] = useState(false);
@@ -35,6 +43,10 @@ const NoteScreen = props => {
   const [datafilter, setDataFilter] = useState([]);
   const [masterdata, setMasterdata] = useState([]);
   const [search, setSearch] = useState('');
+
+  function renderItemSeparator() {
+    return <View style={styles.itemSeparator} />;
+  }
 
   const getNote = async () => {
     setLoadding(true);
@@ -91,28 +103,48 @@ const NoteScreen = props => {
   };
 
   const deleteItem = itemId => {
-    let filterData = [];
-    filterData = noteDatas?.filter(function (n) {
-      return n?._id != itemId;
-    });
-    const userId = userInfo?._id;
-    const add = {
-      data: filterData,
-    };
-    noteCollection
-      .doc(userId)
-      .set(add)
-      .then(response => {
-        setNoteData(filterData);
-        setMasterdata(filterData);
-        setDataFilter(filterData);
-      })
-      .catch(e => {
-        console.log('catch >> ', e);
-      })
-      .finally(f => {
-        console.log('final >> ', f);
-      });
+    Alert.alert(
+      '',
+      'Are you sure you want to delete?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // console.log('OK Pressed');
+            let filterData = [];
+            filterData = noteDatas?.filter(function (n) {
+              return n?._id != itemId;
+            });
+            const userId = userInfo?._id;
+            const add = {
+              data: filterData,
+            };
+            noteCollection
+              .doc(userId)
+              .set(add)
+              .then(response => {
+                setNoteData(filterData);
+                setMasterdata(filterData);
+                setDataFilter(filterData);
+              })
+              .catch(e => {
+                console.log('catch >> ', e);
+              })
+              .finally(f => {
+                console.log('final >> ', f);
+              });
+            // window.location.reload;
+            // DevSettings.reload();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   const QuickActions = (index, item) => {
@@ -222,14 +254,12 @@ const NoteScreen = props => {
           />
         </View>
       ) : (
-        <SwipeableFlatList
+        <FlatList
           showsVerticalScrollIndicator={false}
           data={datafilter}
           renderItem={RenderNote}
           keyExtractor={extractItemKey}
           maxSwipeDistance={50}
-          shouldBounceOnMount={true}
-          renderQuickActions={({index, item}) => QuickActions(index, item)}
         />
       )}
 
@@ -286,4 +316,9 @@ const styles = StyleSheet.create({
   },
   row: {flexDirection: 'row'},
   desc: {marginTop: 3, fontWeight: '300', color: '#333'},
+  itemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    // backgroundColor: darkColors.onBackground,
+    opacity: colorEmphasis.medium,
+  },
 });

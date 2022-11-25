@@ -1,13 +1,21 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {scale, theme} from '../../utils';
-import {InputBox, Label, Header, Title} from '../../components';
+import {InputBox, Label, Header, Title, AlertModel} from '../../components';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {noteCollection} from '../../utils/FirebaseServices';
 import {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 
 const NoteDescription = ({route}) => {
+  const [show, setShow] = useState(false);
   const {item, noteData} = route.params;
   const [allNotes, setAllnotes] = useState([]);
   const navigation = useNavigation();
@@ -21,31 +29,50 @@ const NoteDescription = ({route}) => {
   }, []);
 
   const handleDelete = async () => {
-    setLoading(true);
-    let filterData = [];
-    filterData = allNotes?.filter(function (n) {
-      return n?._id != item?._id;
-    });
-    const userId = userInfo?._id;
-    const add = {
-      data: filterData,
-    };
-    noteCollection
-      .doc(userId)
-      .set(add)
-      .then(response => {
-        setLoading(false);
-        navigation.goBack();
-      })
-      .catch(e => {
-        setLoading(false);
+    Alert.alert(
+      '',
+      'Are you sure you want to delete?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            // console.log('OK Pressed');
+            setLoading(true);
+            let filterData = [];
+            filterData = allNotes?.filter(function (n) {
+              return n?._id != item?._id;
+            });
+            const userId = userInfo?._id;
+            const add = {
+              data: filterData,
+            };
+            noteCollection
+              .doc(userId)
+              .set(add)
+              .then(response => {
+                setLoading(false);
+                navigation.goBack();
+                ToastAndroid.show('deleted sucessfully', ToastAndroid.SHORT);
+              })
+              .catch(e => {
+                setLoading(false);
 
-        console.log('catch >> ', e);
-      })
-      .finally(f => {
-        setLoading(false);
-        console.log('final >> ', f);
-      });
+                console.log('catch >> ', e);
+              })
+              .finally(f => {
+                setLoading(false);
+                console.log('final >> ', f);
+              });
+          },
+        },
+      ],
+      {cancelable: false},
+    );
   };
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
@@ -90,6 +117,7 @@ const NoteDescription = ({route}) => {
           title={item.desc}
           style={{marginTop: scale(15), fontWeight: '300', fontSize: scale(13)}}
         />
+        {show && <AlertModel title="your note is deleted successfully" />}
       </View>
     </View>
   );
