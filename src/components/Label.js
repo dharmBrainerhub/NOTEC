@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: theme.colors.red,
     fontSize: scale(12),
+    marginTop: -scale(10),
   },
 });
 
