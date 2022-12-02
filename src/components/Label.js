@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.black,
     fontSize: scale(15),
-    fontWeight:'600'
+    fontWeight: '600',
   },
   error: {
     textAlign: 'center',

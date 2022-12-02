@@ -8,7 +8,14 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
-import {AlertModel, Button, InputBox, Loader, Title} from '../../components';
+import {
+  AlertModel,
+  Button,
+  Error,
+  InputBox,
+  Loader,
+  Title,
+} from '../../components';
 import {scale, theme} from '../../utils';
 import {usersCollection} from '../../utils/FirebaseServices';
 import {useNavigation} from '@react-navigation/native';
@@ -25,7 +32,12 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setLoadding] = useState(false);
   const [show, setShow] = useState(false);
-  const [errorMsg, setErrormsg] = useState('');
+  const [errorMsg, setErrormsg] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    passsword: '',
+  });
 
   const clearFilds = () => {
     setEmail('');
@@ -33,14 +45,39 @@ const SignupScreen = () => {
     setFirstName('');
     setLastName('');
   };
+  let error = false;
+  const validation = () => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
+    if (firstName.trim() === '') {
+      errorMsg.firstName = 'Please enter first name';
+      error = true;
+    } else {
+      errorMsg.firstName = '';
+    }
+    if (lastName.trim() === '') {
+      errorMsg.lastName = 'Please enter last name';
+      error = true;
+    } else {
+      errorMsg.lastName = '';
+    }
+    if (reg.test(email) === false) {
+      errorMsg.email = 'Please enter valid email';
+      error = true;
+    } else {
+      errorMsg.email = '';
+    }
+    if (password.trim().length !== 6) {
+      errorMsg.passsword = 'Please enter minimum 6 chars';
+      error = true;
+    } else {
+      errorMsg.passsword = '';
+    }
+    setErrormsg({...errorMsg, errorMsg});
+    return error;
+  };
   const signupAction = () => {
-    if (
-      firstName !== '' &&
-      lastName !== '' &&
-      email !== '' &&
-      password !== ''
-    ) {
+    if (!validation()) {
       setLoadding(true);
       try {
         auth()
@@ -73,7 +110,6 @@ const SignupScreen = () => {
                 setLoadding(false);
                 console.log('final >> ', f);
               });
-
             console.log('User account created & signed in!');
           })
           .catch(error => {
@@ -82,7 +118,6 @@ const SignupScreen = () => {
               console.log('That email address is already in use!');
               clearAlert('That email address is already in use!');
             }
-
             if (error.code === 'auth/invalid-email') {
               console.log('That email address is invalid!');
               clearAlert('That email address is invalid!');
@@ -96,8 +131,6 @@ const SignupScreen = () => {
       } catch (error) {
         console.log('error', error);
       }
-    } else {
-      alert('All fields are mandatory.');
     }
   };
 
@@ -146,6 +179,9 @@ const SignupScreen = () => {
           style={styles.textInput}
           placeholder="First Name"
         />
+        {errorMsg.firstName && (
+          <Error error={errorMsg.firstName} style={{top: -5}} />
+        )}
         <InputBox
           onChangeText={txt => {
             setLastName(txt);
@@ -154,6 +190,9 @@ const SignupScreen = () => {
           style={styles.textInput}
           placeholder="Last Name"
         />
+        {errorMsg.lastName && (
+          <Error error={errorMsg.lastName} style={{top: -5}} />
+        )}
         <InputBox
           onChangeText={txt => {
             setEmail(txt);
@@ -162,6 +201,7 @@ const SignupScreen = () => {
           style={styles.textInput}
           placeholder="Your Email"
         />
+        {errorMsg.email && <Error error={errorMsg.email} style={{top: -5}} />}
         <InputBox
           onChangeText={txt => {
             setPassword(txt);
@@ -172,6 +212,9 @@ const SignupScreen = () => {
           secureTextEntry
           passwordIcon
         />
+        {errorMsg.passsword && (
+          <Error error={errorMsg.passsword} style={{top: -5}} />
+        )}
       </View>
       <Button
         title={'Signup'}
