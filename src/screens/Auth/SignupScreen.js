@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import auth from '@react-native-firebase/auth';
@@ -32,7 +33,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setLoadding] = useState(false);
   const [show, setShow] = useState(false);
-
+  const [err, setErr] = useState('');
   const [errorMsg, setErrormsg] = useState({
     firstName: '',
     lastName: '',
@@ -110,6 +111,10 @@ const SignupScreen = () => {
                 clearFilds();
                 setLoadding(false);
                 naviagtion.navigate('SignIn');
+                ToastAndroid.show(
+                  'Account create successfully',
+                  ToastAndroid.SHORT,
+                );
                 console.log('response firestore  >> ', response);
               })
               .catch(e => {
@@ -147,22 +152,23 @@ const SignupScreen = () => {
   const clearAlert = desc => {
     setTimeout(() => {
       setShow(true);
-      setErrormsg(desc);
+      setErr(desc);
     }, 350);
   };
 
   const closeModel = () => {
     setShow(false);
-    setErrormsg('');
+    setErr('');
   };
 
-  const onInputChange = e => {
-    const {value} = e.target;
-    console.log('Input value: ', value);
-
+  const onInputChange = (fild, e) => {
     const re = /^[A-Za-z]+$/;
-    if (value === '' || re.test(value)) {
-      setFirstName(value);
+    if (re.test(e) || e === '') {
+      if (fild === 1) {
+        setFirstName(e);
+      } else {
+        setLastName(e);
+      }
     }
   };
   return (
@@ -192,12 +198,11 @@ const SignupScreen = () => {
           marginTop: h * 0.4,
         }}>
         <InputBox
-          onChangeText={txt => {
-            setFirstName(txt);
-          }}
           value={firstName}
           style={styles.textInput}
-          onChange={onInputChange}
+          onChangeText={txt => {
+            onInputChange(1, txt);
+          }}
           placeholder="First Name"
         />
         {errorMsg.firstName && (
@@ -205,7 +210,7 @@ const SignupScreen = () => {
         )}
         <InputBox
           onChangeText={txt => {
-            setLastName(txt);
+            onInputChange(2, txt);
           }}
           value={lastName}
           style={styles.textInput}
@@ -257,9 +262,7 @@ const SignupScreen = () => {
         </Text>
       </TouchableOpacity>
       {isLoading && <Loader loading={isLoading} />}
-      {show && (
-        <AlertModel title="Signup" subTitle={errorMsg} close={closeModel} />
-      )}
+      {show && <AlertModel title="Signup" subTitle={err} close={closeModel} />}
     </KeyboardAwareScrollView>
   );
 };

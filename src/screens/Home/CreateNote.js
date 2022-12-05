@@ -47,6 +47,7 @@ const CreateNote = ({route}) => {
     setTitle(item?.title);
     setDescrption(item?.desc);
   }, [edit]);
+
   const handleNote = async () => {
     // console.log(title[0]);
     if (
@@ -56,32 +57,35 @@ const CreateNote = ({route}) => {
       descrption[0] != ' '
     ) {
       if (edit) {
-        setLoading(true);
-        ToastAndroid.show('Task edited successfully', ToastAndroid.SHORT);
-        let updateItem = {...item};
-        let updatenote = [...edit];
-        let index = updatenote.findIndex(el => el._id == item._id);
-        updatenote[index].title = title;
-        updatenote[index].desc = descrption;
-        const updateData = {
-          data: updatenote,
-        };
-        const userId = userInfo?._id;
-        noteCollection
-          .doc(userId)
-          .set(updateData)
-          .then(response => {
-            setLoading(false);
-            navigation.goBack();
-          })
-          .catch(e => {
-            setLoading(false);
-            console.log('catch >> ', e);
-          })
-          .finally(f => {
-            console.log('final >> ', f);
-            setLoading(false);
-          });
+        if (title != '' && descrption != '') {
+          setLoading(true);
+          let updateItem = {...item};
+          let updatenote = [...edit];
+          let index = updatenote.findIndex(el => el._id == item._id);
+          updatenote[index].title = title;
+          updatenote[index].desc = descrption;
+          const updateData = {
+            data: updatenote,
+          };
+          const userId = userInfo?._id;
+          noteCollection
+            .doc(userId)
+            .set(updateData)
+            .then(response => {
+              setLoading(false);
+              navigation.goBack();
+            })
+            .catch(e => {
+              setLoading(false);
+              console.log('catch >> ', e);
+            })
+            .finally(f => {
+              console.log('final >> ', f);
+              setLoading(false);
+            });
+        } else {
+          ToastAndroid.show('Empty not allowed', ToastAndroid.SHORT);
+        }
       } else {
         dispatch(noteLoadding(true));
         setLoading(true);

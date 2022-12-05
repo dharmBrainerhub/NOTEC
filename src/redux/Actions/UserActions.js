@@ -1,6 +1,7 @@
 import * as types from './ActionsTypes';
 import auth from '@react-native-firebase/auth';
 import {noteCollection, usersCollection} from '../../utils/FirebaseServices';
+import {ToastAndroid} from 'react-native';
 
 export const isLogin = payload => {
   console.log('payload of login >>. ', payload);
@@ -35,7 +36,7 @@ export const deleteAccount = () => {
   user
     .delete()
     .then(() => {
-      alert('User deleted successfully ');
+      ToastAndroid.show('User deleted successfully ', ToastAndroid.SHORT);
       usersCollection.doc(user.uid).delete();
       noteCollection.doc(user.uid).delete();
     })

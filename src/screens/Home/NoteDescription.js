@@ -41,8 +41,6 @@ const NoteDescription = ({route}) => {
         {
           text: 'OK',
           onPress: () => {
-            // ToastAndroid.show('Task deleted successfully', ToastAndroid.SHORT);
-            // console.log('OK Pressed');
             setLoading(true);
             let filterData = [];
             filterData = allNotes?.filter(function (n) {
