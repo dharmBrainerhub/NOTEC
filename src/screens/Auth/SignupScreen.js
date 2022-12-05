@@ -86,7 +86,6 @@ const SignupScreen = () => {
         auth()
           .createUserWithEmailAndPassword(email, password)
           .then(res => {
-            console.log('resresresresres0>>   0', res);
             let user = {
               first_name: firstName,
               last_name: lastName,

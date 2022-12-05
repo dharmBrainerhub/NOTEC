@@ -10,7 +10,7 @@ import React, {useState} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {AlertModel, Button, InputBox, Loader, Title} from '../../components';
 import {scale, theme} from '../../utils';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 const h = Dimensions.get('screen').height;
 const w = Dimensions.get('screen').width;
 import auth from '@react-native-firebase/auth';
@@ -26,7 +26,7 @@ const SignInScreen = () => {
   const [show, setShow] = useState(false);
   const [errorMsg, setErrormsg] = useState('');
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   const clearFilds = () => {
     setEmail(null);
     setPassword(null);
@@ -46,7 +46,13 @@ const SignInScreen = () => {
               setLoader(false);
               dispatch(userData(documentSnapshot?.data()));
               dispatch(isLogin(true));
-              navigation.navigate('Home');
+              // navigation.replace('Home');
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 1,
+                  routes: [{name: 'Home'}],
+                }),
+              );
             });
           })
           .catch(error => {
@@ -81,7 +87,7 @@ const SignInScreen = () => {
     setShow(false);
     setErrormsg('');
   };
-  const navigation = useNavigation();
+
   return (
     <KeyboardAwareScrollView
       showsVerticalScrollIndicator={false}
