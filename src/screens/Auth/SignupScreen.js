@@ -32,6 +32,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setLoadding] = useState(false);
   const [show, setShow] = useState(false);
+
   const [errorMsg, setErrormsg] = useState({
     firstName: '',
     lastName: '',
@@ -48,15 +49,22 @@ const SignupScreen = () => {
   let error = false;
   const validation = () => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    let emptyreg = /^[A-Za-z]+$/;
 
     if (firstName.trim() === '') {
       errorMsg.firstName = 'Please enter first name';
+      error = true;
+    } else if (emptyreg.test(firstName) === false) {
+      errorMsg.firstName = 'Number not allowed';
       error = true;
     } else {
       errorMsg.firstName = '';
     }
     if (lastName.trim() === '') {
       errorMsg.lastName = 'Please enter last name';
+      error = true;
+    } else if (emptyreg.test(lastName) === false) {
+      errorMsg.lastName = 'Number not allowed';
       error = true;
     } else {
       errorMsg.lastName = '';
@@ -147,6 +155,16 @@ const SignupScreen = () => {
     setShow(false);
     setErrormsg('');
   };
+
+  const onInputChange = e => {
+    const {value} = e.target;
+    console.log('Input value: ', value);
+
+    const re = /^[A-Za-z]+$/;
+    if (value === '' || re.test(value)) {
+      setFirstName(value);
+    }
+  };
   return (
     <KeyboardAwareScrollView
       style={{
@@ -179,6 +197,7 @@ const SignupScreen = () => {
           }}
           value={firstName}
           style={styles.textInput}
+          onChange={onInputChange}
           placeholder="First Name"
         />
         {errorMsg.firstName && (

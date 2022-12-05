@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {AlertModel, Header, Loader} from '../../components';
@@ -50,6 +57,7 @@ const CreateNote = ({route}) => {
     ) {
       if (edit) {
         setLoading(true);
+        ToastAndroid.show('Task edited successfully', ToastAndroid.SHORT);
         let updateItem = {...item};
         let updatenote = [...edit];
         let index = updatenote.findIndex(el => el._id == item._id);
@@ -93,6 +101,7 @@ const CreateNote = ({route}) => {
         await dispatch(addNote(add));
         setLoading(false);
         navigation.navigate('Home');
+        ToastAndroid.show('Task created successfully', ToastAndroid.SHORT);
       }
     } else {
       // Alert.alert('Must add title and note description');

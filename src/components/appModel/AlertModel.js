@@ -16,7 +16,12 @@ const AlertModel = props => {
         <View style={styles.activityIndicatorWrapper}>
           <View style={styles.headerView}>
             {<Title title={title} />}
-            <Icon name="x" size={scale(22)} onPress={close} color={'black'} />
+            <Icon
+              name="x"
+              size={scale(22)}
+              onPress={close}
+              color={theme.colors.black}
+            />
           </View>
           <View style={styles.divider} />
           <View style={styles.subTitleView}>

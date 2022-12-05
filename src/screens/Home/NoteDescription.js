@@ -41,6 +41,7 @@ const NoteDescription = ({route}) => {
         {
           text: 'OK',
           onPress: () => {
+            // ToastAndroid.show('Task deleted successfully', ToastAndroid.SHORT);
             // console.log('OK Pressed');
             setLoading(true);
             let filterData = [];
@@ -61,7 +62,6 @@ const NoteDescription = ({route}) => {
               })
               .catch(e => {
                 setLoading(false);
-
                 console.log('catch >> ', e);
               })
               .finally(f => {
