@@ -96,7 +96,7 @@ const InputBox = props => {
         <Icon
           name={!showpassword ? 'eye' : 'eye-off'}
           size={scale(18)}
-          color={theme.colors.grey22}
+          color={theme.colors.black}
           style={styles.icon}
           onPress={() => setShowpassword(!showpassword)}
         />

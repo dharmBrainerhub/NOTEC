@@ -57,7 +57,7 @@ const NoteDescription = ({route}) => {
               .then(response => {
                 setLoading(false);
                 navigation.goBack();
-                ToastAndroid.show('deleted sucessfully', ToastAndroid.SHORT);
+                ToastAndroid.show('Deleted sucessfully', ToastAndroid.SHORT);
               })
               .catch(e => {
                 setLoading(false);
@@ -105,17 +105,31 @@ const NoteDescription = ({route}) => {
           <View>
             <Label
               title="Created at"
-              style={{opacity: 0.5, fontSize: scale(12)}}
+              style={{
+                opacity: 0.5,
+                fontSize: scale(12),
+                color: theme.colors.black,
+              }}
             />
             <Label
               title={item?.date}
-              style={{opacity: 0.5, fontSize: scale(10), left: scale(2)}}
+              style={{
+                opacity: 0.5,
+                fontSize: scale(10),
+                left: scale(2),
+                color: theme.colors.black,
+              }}
             />
           </View>
         </View>
         <Label
           title={item.desc}
-          style={{marginTop: scale(15), fontWeight: '300', fontSize: scale(13)}}
+          style={{
+            marginTop: scale(15),
+            fontWeight: '300',
+            fontSize: scale(13),
+            color: theme.colors.black,
+          }}
         />
         {show && <AlertModel title="your note is deleted successfully" />}
       </View>

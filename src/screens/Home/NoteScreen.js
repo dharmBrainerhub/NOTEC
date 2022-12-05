@@ -182,6 +182,11 @@ const NoteScreen = props => {
       navigation.navigate('SignIn');
     }
   }, [userInfo]);
+
+  const handleClear = () => {
+    setSearchInput(false), setSearch('');
+    setDataFilter(masterdata);
+  };
   return (
     <View style={styles.main}>
       <View style={styles.headerView}>
@@ -198,7 +203,9 @@ const NoteScreen = props => {
             <CustomIcon
               iconName="close"
               IconSetName={FontAwesome}
-              onPress={() => setSearchInput(false)}
+              onPress={() => {
+                handleClear();
+              }}
               iconSize={20}
             />
           ) : (

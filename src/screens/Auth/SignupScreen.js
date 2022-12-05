@@ -61,8 +61,11 @@ const SignupScreen = () => {
     } else {
       errorMsg.lastName = '';
     }
-    if (reg.test(email) === false) {
-      errorMsg.email = 'Please enter valid email';
+    if (email.trim() === '') {
+      errorMsg.email = 'Please enter your email';
+      error = true;
+    } else if (reg.test(email) === false) {
+      errorMsg.email = 'Enter valid email';
       error = true;
     } else {
       errorMsg.email = '';
@@ -211,6 +214,7 @@ const SignupScreen = () => {
           placeholder="Password"
           secureTextEntry
           passwordIcon
+          maxLength={6}
         />
         {errorMsg.passsword && (
           <Error error={errorMsg.passsword} style={{top: -5}} />

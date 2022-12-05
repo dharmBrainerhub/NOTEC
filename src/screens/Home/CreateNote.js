@@ -102,7 +102,7 @@ const CreateNote = ({route}) => {
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.white}}>
       <Header
-        HeaderTitle={edit ? 'Edit you note' : 'Create Your Note'}
+        HeaderTitle={edit ? 'Edit Your Note' : 'Create Your Note'}
         onPress={() => navigation.goBack()}
         iconName={'save'}
         onPressSave={handleNote}

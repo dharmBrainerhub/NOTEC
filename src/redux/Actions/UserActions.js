@@ -35,7 +35,7 @@ export const deleteAccount = () => {
   user
     .delete()
     .then(() => {
-      alert('User deleted');
+      alert('User deleted successfully ');
       usersCollection.doc(user.uid).delete();
       noteCollection.doc(user.uid).delete();
     })
